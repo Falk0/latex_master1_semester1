@@ -1,0 +1,158 @@
+\documentclass[a4paper]{article}
+
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage{textcomp}
+\usepackage[english]{babel}
+\usepackage{amsmath, amssymb}
+\usepackage{natbib}
+\usepackage{listings}
+% figure support
+\usepackage{import}
+\usepackage{xifthen}
+\pdfminorversion=7
+\usepackage{pdfpages}
+\usepackage{transparent}
+\pdfsuppresswarningpagegroup=1
+
+\title{Test title}
+\author{Linus Falk}
+\begin{document}
+\maketitle
+\section*{Introduction}
+some fancy words about iterations or doda
+
+\section*{Problem B1}
+
+\begin{table}[ht!]
+\centering
+\begin{tabular}{lll}
+ \textbf{Method}& \textbf{Iteration}  &\textbf{Time}\\ \hline
+ Jacobi&  11& 0.004164 \\
+ Gauss-Seidel&  6& 0.004300 \\ 
+ CG& 9&  0.000377\\
+myownLU& & 0.009256\\
+Ab& & 0.000056\\
+Matlab LU& & 0.000062\\\hline
+\end{tabular}
+\caption{example}
+\label{tab:tab1}
+\end{table}
+
+\section*{Problem B2}
+
+\begin{table}[ht!]
+\centering
+\begin{tabular}{lllll} 
+\textbf{Method}& \textbf{Iterations}& \textbf{100}& \textbf{500}& \textbf{1000} \\ \hline
+\textbf{Jacobi}& NaN/NaN/NaN& \textcolor{red}{NaN}& \textcolor{red}{NaN}& \textcolor{red}{NaN} \\ 
+\textbf{Gauss-Seidel}& NaN/NaN/NaN& \textcolor{red}{NaN}& \textcolor{red}{NaN}& \textcolor{red}{NaN} \\
+\textbf{CG} &NaN/NaN/NaN & \textcolor{red}{NaN}& \textcolor{red}{NaN}& \textcolor{red}{NaN} \\
+\textbf{myownLU}& & 1.73474& 259.189& 2425.89\\ 
+\textbf{Ab}& & 0.00023& 0.01010& 0.02241\\
+\textbf{MATLAB LU}& & 0.00021& 0.00351& 0.02076 \\
+ \hline
+
+\end{tabular}
+\caption{w = 1}
+\label{tab:tab1}
+\end{table}
+
+
+\begin{table}[ht!]
+\centering
+\begin{tabular}{lllll}
+\textbf{Method}& \textbf{Iterations}& \textbf{100}& \textbf{500}& \textbf{1000} \\ \hline
+\textbf{Jacobi}& NaN/NaN/NaN& \textcolor{red}{NaN}& \textcolor{red}{NaN}& \textcolor{red}{NaN} \\ 
+\textbf{Gauss-Seidel}& 110/NaN/NaN& \textcolor{black}{0.00297}& \textcolor{red}{NaN}& \textcolor{red}{NaN}\\
+\textbf{CG} &138/NaN/NaN & \textcolor{black}{0.00245}& \textcolor{red}{NaN}&  \textcolor{red}{NaN}\\
+\textbf{myownLU}& & & & \\ 
+\textbf{Ab}& & .00033& 0.00982& 0.01947\\
+\textbf{MATLAB LU}& & 0.00020& 0.00936& 0.01541\\
+ \hline
+
+\end{tabular}
+\caption{w = 5}
+\label{tab:tab2}
+\end{table}
+
+
+\begin{table}[ht!]
+\centering
+\begin{tabular}{lllll}
+\textbf{Method}& \textbf{Iterations}& \textbf{100}& \textbf{500}& \textbf{1000} \\ \hline
+\textbf{Jacobi}& NaN/NaN/NaN& \textcolor{red}{NaN}& \textcolor{red}{NaN}& \textcolor{red}{NaN}\\ 
+\textbf{Gauss-Seidel}& 38/609/NaN& 0.01202& 19.2424& \textcolor{red}{NaN}\\
+\textbf{CG} & 42/374/1952& 0.004506& 0.15488&  1.94158\\
+\textbf{myownLU}& & & & \\ 
+\textbf{Ab}& & 0.00024& 0.009006& 0.02136\\
+\textbf{MATLAB LU}& & 0.00036& 0.00426& 0.01410 \\
+ \hline
+
+\end{tabular}
+\caption{w = 10}
+\label{tab:tab3}
+\end{table}
+
+
+\begin{table}[ht!]
+\centering
+\begin{tabular}{lllll}
+\textbf{Method}& \textbf{Iterations}& \textbf{100}& \textbf{500}& \textbf{1000} \\ \hline
+\textbf{Jacobi}& 22/NaN/NaN& 0.00120 & \textcolor{red}{NaN} & \textcolor{red}{NaN} \\ 
+\textbf{Gauss-Seidel}& 10/27/57& 0.00351 & 0.8681 & 10.2448\\
+\textbf{CG} & 8/24/44 & 0.001852& 0.019314&  0.0588300\\
+\textbf{myownLU}& & & & \\ 
+\textbf{Ab}& & 0.00030& 0.00724& 0.02376\\
+\textbf{MATLAB LU}& & 0.00025& 0.00534& 0.01787\\
+ \hline
+
+\end{tabular}
+\caption{w = 100}
+\label{tab:tab3}
+\end{table}
+
+\bibliographystyle{unsrt}
+\bibliography{references}
+
+The matrix becomes Diagonal dominant row wise when w=100 and N=100, in all other cases are the matrix not diagonal dominant. This explains why the Jacobi method fails except for this case.
+
+For myownLU was the Doolittle algorithm implemented to solve the system of equation. The method is one of the easier to understand and do with pen and paper but lacks the speed for be useful when solving larger systems as can be seen in table 2.
+
+Conjugate gradient method only works for symmetric positive definite matrices and will therefore not be useful for the cases with w = 1. When N and w becomes larger the matrix is ???
+
+
+\section*{Problem B3}
+In this section is a large sparse matrix solved using the methods from earlier. When trying to solve this system was some of the methods not practical to use: myownLU which was proven to slow previously was therefore excluded. 
+
+Even though the Conjugate Gradient method is very useful for large sparse matrices like this, it became clear that the improvement of each iteration for  $\alpha = 0,$ and $0.00001$  was very slow and the test was only finished with $\alpha =0.1 $ and $0.0001$. This is Because the improvement of each iteration of the Conjugate Gradient method depends on the condition number. The Conjugate gradient method would finish in the other cases also if we let it run and if the round off errors wouldn’t become to big. 
+
+For the other two methods (Jacobi and Gauss-Seidel) it was also clear that the condition number had an effect on speed of convergence, making it unpractical to time them for the ill conditioned systems where $\alpha = 0, 0.001$ and $0.00001$. 
+
+\begin{itemize}
+    \item for $\alpha = 0.1$  cond(A) $\approx $ 41
+    \item for $\alpha = 0.001$  cond(A) $\approx $ 4000
+    \item for $\alpha = 0.00001$  cond(A) $\approx $ 39600
+    \item for $\alpha = 0$  cond(A) $\approx $ 4053700
+\end{itemize}
+
+
+\begin{table}[ht!]
+\centering
+\begin{tabular}{llllll}
+\textbf{Method}& \textbf{Iteration}& a = 0 & a = 0.1 & a = 0.001 & a = 0.0001 \\ \hline
+Jacobi&NaN/298/NaN/NaN  & &507.30& &  \\
+Gauss-Seidel& NaN/260/NaN/Nan  & &142.36 & &  \\ 
+CG&  NaN/260/25116/NaN&NaN & 0.0974& 7.2487&NaN \\
+myownLU& & & & &\\
+Ab& & 0.0003& 0.0003& 0.0002& 0.0004\\
+Matlab LU& & 0.0014& 0.0016& 0.0014& 0.0017\\\hline
+\end{tabular}
+\caption{Result Problem B3}
+\label{tab:tab1}
+\end{table}
+
+
+\bibliographystyle{unsrt}
+\bibliography{references}
+\end{document}

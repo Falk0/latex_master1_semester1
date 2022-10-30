@@ -1,0 +1,70 @@
+\documentclass[a4paper]{article}
+
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage{textcomp}
+\usepackage[dutch]{babel}
+\usepackage{amsmath, amssymb}
+\usepackage{listings}
+
+% figure support
+\usepackage{import}
+\usepackage{xifthen}
+\pdfminorversion=7
+\usepackage{pdfpages}
+\usepackage{transparent}
+\newcommand{\incfig}[1]{%
+	\def\svgwidth{\columnwidth}
+	\import{./figures/}{#1.pdf_tex}
+}
+
+\pdfsuppresswarningpagegroup=1
+\title{Assignment 1 - bridging course}
+\author{Linus Falk}
+\begin{document}
+\maketitle
+
+
+
+\section{Workout 2.9}
+\textbf{Prove that if $x$ and $y$ are floating-point numbers with $\frac{y}{2} \le x \le y$ then fl($x-y$) $=x-y$ provided that the guard digit is supported, $\beta = 2$ and $x-y$ does not underflow.}
+\newline 
+Let $y =  (d_0 d_1 d_2 \ldots  d_{p-1}) \beta^{e} $ Then we have:
+\begin{equation}
+	(d_0 d_1 d_2 \ldots  d_{p-1}) \beta^{e-1} \le x \le (d_0^{\prime} d_1^{\prime} d_2^{\prime} \ldots  d^{\prime}_{p-1}) \beta^{e}  
+\end{equation}
+
+if we investigate the inequality we can see that x is between the exponent $e$ and  $e-1$. For every x with the same  $e$ as y we have exact subtraction of the two floating-type numbers. In the other case we have a maximum difference of 1 in the exponent. If swap between x and y, such that $0 \le y \le x$ and scale them so we can represent the digits in x as in (2) $(x_0 x_1 \ldots x_{p-1})$ we will have exact subtraction because $x \le y$ and $x-y \le y$, so we will only have p valid digits and $w_0 = 0$ 
+
+
+\begin{equation}
+	\begin{matrix} 
+		x_0 &  x_1 & x_2 & \ldots & \ldots&  x_{p-1}\\
+		0 &  y_0 &  y_1 &  \ldots  & \ldots &  y_{p} \\ \hline
+		w_0 &  w_1 &  w_2 &  \ldots & \ldots&  w_{p}
+  
+  	\end{matrix} 
+\end{equation}
+
+
+\newpage
+\section{Workout 2.10}
+\textbf{Consider the Newton’s method for solving $f(x) =a - \frac{1}{x}$ for a given real number $a$. Show that the computation of $x_{k+1} from x_k$ (successive Newton’s iterations) can be expressed as two multiply-adds, thus the roundoff errors is reduced by a factor of $\frac{1}{4}$ if FMA operation is available.}
+
+\subsection{Newtons method}
+\begin{equation}
+	x_{k+1} = x_k - \frac{f(x)}{f^{\prime}(x)}
+\end{equation}
+We find the  derivative of $a-\frac{1}{x}$ that is  $\frac{1}{x^2}$ and plug into (2) and simplify to see if we can put it in two multiply-adds form.
+\begin{equation}
+	x_{k+1} = x_k - \frac{a-\frac{1}{x_k}}{\frac{1}{x^2}} = x_k - x^2_k \left( a-\frac{1}{x_k} \right) = x_k-x_k\left( ax_k-1 \right)  
+\end{equation}
+By putting the equation on the later form we can compute the iterations with two multiply-adds. First inside the parenthesis and then the outer part. 
+
+\newpage
+
+
+
+
+
+\end{document}

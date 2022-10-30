@@ -1,0 +1,241 @@
+\documentclass[a4paper]{article}
+
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage{textcomp}
+\usepackage[english]{babel}
+\usepackage{amsmath, amssymb}
+\usepackage{listings}
+
+% figure support
+\usepackage{import}
+\usepackage{xifthen}
+\pdfminorversion=7
+\usepackage{pdfpages}
+\usepackage{transparent}
+\newcommand{\incfig}[1]{%
+	\def\svgwidth{\columnwidth}
+	\import{./figures/}{#1.pdf_tex}
+}
+
+\pdfsuppresswarningpagegroup=1
+\title{Assignment 3}
+\author{Linus Falk}
+\begin{document}
+\maketitle
+
+\section{Workout 2.3}
+\textbf{Show that orthogonal matrices preserve the 2-norm and the Frobenius norm
+of matrices.}
+
+Let Q be a orthogonal matrix $Q \in \mathbb{R}^{m\text{x}n}$ and an arbitrary matrix $A \in \mathbb{R}^{n \text{x}m}$
+\begin{equation}
+\|QA\|^2_2 = (QAu)^{T}QA = A^{T}Q^{T}QA = A^{T}A = \|A\|^{2}_2
+\end{equation}
+
+We know that $ \|A\|_F =  \sum_{i=1}^{m} \sum_{j=i}^{n} a^2_{ij} = \text{trace}(AA^{T}) $
+
+\begin{equation}
+	\begin{aligned}
+		\|QA\|^{2}_F = \sum_{i=1}^{m} \sum_{j=i}^{n} q^2_{ij}a^2_{ij} =  \text{trace}(QA(QA)^{T})^2 = \text{trace}(QAA^{T}Q^{T})^2
+	\end{aligned}
+\end{equation}
+
+The trace in invariant to cyclic permutations and so we got: 
+\begin{equation}
+	\begin{aligned}
+		\text{trace}(QA A^{T}Q^{T})^2 = \text{trace}(Q^{T}QA^{T}A)^2 = \text{trace}(A^{T}A )^2 = \|A\|^2_H
+	\end{aligned}
+\end{equation}
+
+
+\section{Workout 2.8}
+\textbf{Show that it requires $2n^2(m-\frac{n}{3})$ flops to compute R in the QR-factorization of $A\in \mathbb{R}^{m\times}, m \ge n$ using Householder transformations. This cost does not include the explicit construction of Q. Show that it is required $4(m^2n-mn^2 + \frac{n^{3}}{3}$ }
+
+The Householder matrix multiplication in QR factorization:
+
+\begin{equation}
+	\begin{aligned}
+	HA= A -  \frac{2}{u^{T}u} uu^{T}A = A - \beta u(u^{T})A = A - \beta u w^{T} \\
+	\beta = \frac{2}{u^{T}u} \quad w = A^{T}u
+	\end{aligned} 
+\end{equation}
+
+We get approximately mn flops for each of these calculations. We then proceed to calculate the sum when we reduce the size of H.
+
+\begin{equation}
+	\begin{aligned}
+		\sum_{k=1}^{n} 4(m-k)(n-k) = 4 \sum_{i=1}^{n-1}  (m - n + i)i = 4(m - n )\sum_{i=0}^{n-1} i +4 \sum_{i=0}^{n-1}i^2 = \\
+		2(m-n)n(n-1)+4 \sum_{i=0}^{n-1} j^2 \approx 2(m-n)n(n-1)+4 \int_{0}^{n}   x^2\text{dx} = \\
+		2(m-n)n(n-1)+ \frac{4}{3}n^{3} = 2mn^2 - \frac{2}{3}n^{3} 
+	\end{aligned}
+\end{equation}
+
+
+
+\section{Workout 3.3}
+\textbf{Let $\sigma_1 \ge \sigma_2 \ge  \ldots \ge \sigma \ge 0$ be the singular values of $A \in \mathbb{R}^{m\times n}$ with $m \ge n$ and prove:}
+\subsection{$\|A\|_2 = \sigma_1$}
+$L_2$ norm is defined as: max $\frac{\|Ax\|_2}{\|x\|_2}$
+\begin{equation}
+	\begin{aligned}
+	\|A\|^2_2 = max \frac{\|Ax\|_2}{\|x\|_2} = max \frac{x^{T}A^{T}Ax}{x^{T}x} = \lambda_1 (A^{T}A) = \lambda_1((U\Sigma V^{T})^{T}U \Sigma V^{T}) \\
+	\lambda_1(\Sigma^{T} \Sigma) = \sigma_1^2
+	\end{aligned}
+\end{equation}
+The max is the largest vector i A
+\subsection{$\|A\|_F = \sqrt{\sigma^2_1 +\ldots +\sigma^2_n}$ }
+\begin{equation}
+	\begin{aligned}
+		\|A\|^2_H = \text{trace}(A^{T}A)=\text{trace}((U \Sigma V^{T})^{T}U \Sigma V^{T}) = \text{trace}(V \Sigma^{T}U^{T}U\Sigma V^{T}) \\
+		\text{trace}(V \Sigma^{T} \Sigma V^{T}) = \text{trace}(\Sigma^{T} \Sigma) = \sigma^2_1 + \sigma^2_2 + \ldots + \sigma^2_n 
+	\end{aligned}
+\end{equation}
+
+\subsection{$\|A^{-1}\|_2 = \frac{1}{\sigma_n}$}
+Using that $\sigma_1 \ge \sigma_2 \ge \ldots \ge  \sigma_n \ge 0$
+\begin{equation}
+	\begin{aligned}
+		\|A^{-1}\|^2_2 = max \frac{\|x\|_2}{\|Ax\|_2} = max \frac{x^{T}x}{Ax^{T}A^{T}Ax} = \frac{1}{\sigma^2_n}  	
+	\end{aligned}
+\end{equation}
+
+\subsection{$\text{cond}(A)_2=\frac{\sigma_1}{\sigma_n}$}
+
+\begin{equation}
+	\begin{aligned}
+		\text{Cond}_2(A) = \|A\|\|A^{-1}\| = [\text{from 1 and 3 we get}] = \frac{\sigma_1}{\sigma_n}
+	\end{aligned}
+\end{equation}
+
+\subsection{Rank(A) = number of nonzeros singular values}
+If we decompose A such that $A= U \Sigma V^{T}$ and U and V are orthogonal matrices. The multiplication of these invertible/orthogonal matrices with $\Sigma$ doesn't change the rank of $\Sigma$. The rank of $\Sigma$ is therefore the rank of A. The rank of  $\Sigma$ is equal the number of non-singular values. 
+
+\newpage
+
+\section{Workout 3.5}
+\textbf{Let A be an $m \times n$ matrix off full rank r = min(m,n). If C is another $m\times n$ matrix such that $\|C-A\|_2 < \sigma_r$, then show C also has full rank.}
+
+Using SVD let D be the nearest singular matrix to A:
+
+\begin{equation}
+	\begin{aligned}
+		A = \begin{bmatrix} \sigma_1& 0& \ldots & \ldots& 0\\ 
+			0& \sigma_2& \ldots& \ldots& 0\\
+			\vdots& \ldots&  \ddots& \vdots& \vdots \\
+			0& \ldots& \ldots& \sigma_{r-1}& 0 \\
+			0& \ldots& \ldots& \ldots& \sigma_r \\
+		0& \ldots& \ldots& \ldots& 0\end{bmatrix},
+		D = \begin{bmatrix} \sigma_1& 0& \ldots & \ldots& 0\\ 
+			0& \sigma_2& \ldots& \ldots& 0\\
+			\vdots& \ldots&  \ddots& \vdots& \vdots \\
+			0& \ldots& \ldots& \sigma_{r-1}&  0 \\
+			0& \ldots& \ldots& \ldots& 0 \\
+		0& \ldots& \ldots& \ldots& 0\end{bmatrix} \\ 
+	\end{aligned}
+\end{equation}
+
+The L2 norm $\|A-D\|_2 = \|\Sigma_A -\Sigma_D\|_2 = \sigma_r $ if $\|A-C\|_2 < \sigma_r$ then the rank of C most be of the same A.  
+
+\section{WO 2.9 programming  Python}
+
+\begin{lstlisting}[language=Python]
+#Implement a function for QR factorization
+
+def grot(a,b):
+    if abs(a) > abs(b):
+        t = b/a; c = 1/np.sqrt(1+t**2); s = c*t
+    else:
+        t = a/b; s = 1/np.sqrt(1+t**2); c = s*t
+
+   return np.array([c, s])
+
+
+def G(R, c, s, i):
+    R[i][i] = s
+    R[i][i - 1] = c
+    R[i - 1][i] = -c
+    R[i - 1][i - 1] = s
+    return R
+
+
+def qrfac(A, mode = "R"):
+    m, n = np.shape(A)
+    if mode == "R":
+        R = A
+        for j in range(1, n + 1, 1):
+            for i in range(m, j, -1):
+                Q = np.eye(m)
+                [a, b] = grot(R[i - 1][j - 1],
+		R[i - 2][j - 1])
+                R = np.transpose(G(Q, a, b, i - 1)) @ R
+        return np.triu(R)
+
+    elif mode == "RQ":
+        Qsave = np.eye(m)
+        R = A
+        for j in range(1, n + 1, 1):
+            for i in range(m, j, -1):
+                Q = np.eye(m)
+                [a, b] = grot(R[i - 1][j - 1],
+		R[i - 2][j - 1])
+                R = np.transpose(G(Q, a, b, i - 1)) @ R
+                Qsave = Qsave @ Q
+        return np.triu(R), Qsave[0:m][0:m]
+
+    else:
+        print('Input mode types "R" or "QR" ')
+
+A = np.array([[0.8147, 0.0975, 0.1576],
+[0.9058, 0.2785, 0.9706],
+[0.1270, 0.5469, 0.9572],
+[0.9134, 0.9575, 0.4854],
+[0.6324, 0.9649, 0.8003]])
+
+B = np.array([[2, 3, 5],
+             [1, 2, -1],
+             [2, 5, 3],
+             [1, -1, 0]])
+
+C = np.array([[6, 5, 0],
+             [5, 1, 4],
+             [0, 4, 3]])
+
+
+r, q = qrfac(A,"RQ")
+print(q@r-A)
+
+r, q = qrfac(B,"RQ")
+print(q@r-B)
+
+r, q = qrfac(C,"RQ")
+print(q@r-C)
+
+#OUTPUT
+
+[[ 0.00000000e+00  0.00000000e+00  2.77555756e-17]
+ [-2.22044605e-16  1.11022302e-16 -3.33066907e-16]
+ [-2.77555756e-17 -2.22044605e-16 -5.55111512e-16]
+ [-4.44089210e-16 -4.44089210e-16  0.00000000e+00]
+ [-3.33066907e-16 -4.44089210e-16 -3.33066907e-16]]
+
+[[-2.22044605e-16 -4.44089210e-16  0.00000000e+00]
+ [ 0.00000000e+00  0.00000000e+00  3.33066907e-16]
+ [ 0.00000000e+00 -8.88178420e-16  0.00000000e+00]
+ [ 0.00000000e+00  1.55431223e-15  2.50130237e-16]]
+ 
+[[-1.77635684e-15 -8.88178420e-16  2.84775512e-17]
+ [-8.88178420e-16  2.22044605e-16 -8.88178420e-16]
+ [ 0.00000000e+00  0.00000000e+00  0.00000000e+00]]
+
+
+
+
+
+\end{lstlisting}
+
+
+
+
+
+\end{document}
