@@ -1,0 +1,121 @@
+\documentclass[a4paper]{article}
+
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage{textcomp}
+\usepackage[english]{babel}
+\usepackage{amsmath, amssymb}
+\usepackage{natbib}
+\usepackage{float} 
+\usepackage[caption = false]{subfig}
+\usepackage{listings}
+\lstset{
+    breaklines=true,
+    basicstyle=\tt\normalsize,
+    keywordstyle=\color{blue},
+    identifierstyle=\color{magenta},
+    frame = single
+} 
+% figure support
+\usepackage{import}
+\usepackage{xifthen}
+\pdfminorversion=7
+\usepackage{pdfpages}
+\usepackage{transparent}
+\pdfsuppresswarningpagegroup=1
+
+\title{Statistical ML \\ Lecture 2}
+\author{Linus Falk}
+\begin{document}
+\maketitle
+\section{Linear regression discussion points}
+Different reasons we look at the square error, will be discussed. 
+
+Cost landscape in parameter space. 
+
+minimizes can be hard to find 
+
+\begin{itemize}
+	\item In what type of problems is the squared prediction error an unsuitable performance measure:
+\end{itemize}
+
+It symmetric, we maybe don't want to under overestimate the outcome/prediction. Think of medication or battery. Another way yo do it 
+pinball loss. two alternatives 
+\begin{equation}
+\begin{aligned}
+L(x,y,\theta ) = \begin{bmatrix} Pinball loss \end{bmatrix} (y-f(x,\theta)) \alpha , y \ge f(x, \theta) or \\
+(y-f(x,\theta))(1-\alpha), y < f(x, \theta))
+\end{aligned}
+\end{equation}
+
+\begin{itemize}
+	\item How would you visualize a regression model with two inputs.
+\end{itemize}
+
+A plane for a linear regression model. A surface lives in a subspace of the d parameters space. 
+
+\begin{itemize}
+	\item \textbf{When is there a unique linear regression model that minimizes the average squared-error loss} 
+\end{itemize}
+
+IF we get to little data we can generate a unique model for an example. Think of just having one data point and fitting a line to it. 
+All interpolate the training data 
+
+Necessary for uniqueness that $n \ge (d+1)$ , (not sufficient)
+
+Linear regression model
+
+\begin{equation}
+\overline{X} = \begin{bmatrix} -x_1^{T}- \\ \vdots \\ -x_n^{T}- \end{bmatrix}
+\end{equation}
+
+$X^{T}X$ is invertible. (d+1) when they are linearly independent we can find a unique solution. (rand($\overline{X}$) = d+1)
+
+\begin{itemize}
+	\item 4
+\end{itemize}
+Parameter space 
+Numerical search e.g. gridding. Evaluate J at every gridpoint. Might not find the actual minimum. Might work when d i small $\le$ 3. Another way is gradient search. 
+
+\begin{itemize}
+	\item Consider alternative ways to regularize the least-square method.
+\end{itemize}
+$J(\theta) = 1/n norm( \overline{y} - \overline{X} \overline{\theta}) \\$
+Positive quadratic function in $\theta$ (convex)
+local minimum $\rightarrow$ global minimum of J($\theta$) 
+
+
+Local min (*) $\nabla_0 J(\theta) = 0 <-> \overline{X^T} \overline{X} = X^{T} \overline{y} $
+
+
+**Notes if small amount of data, choose fewer d, but which one to choose? 
+
+
+Different norms for example norm 2 for ridge regression affects the cost. 
+Lasso is another example using norm 1. 
+
+
+Regularization reduces the sensitivity. 
+
+
+\begin{itemize}
+  	\item How does one interpret the 'best' regression function?
+  \end{itemize}  
+
+Finding the balancing point of the distribution for each point. 
+
+
+\begin{itemize}
+	\item In what types of problem can it still produce poor performance
+\end{itemize}
+
+Balancing point between two "hills" give a prediction between them. Data will never come there. Multi modal distribution. The population splits into two parts. In the blood pressure it could be difference between male and female there could therefore be necessary add a new feature. 
+
+
+\subsection{Family of Gaussian distributions}
+Why not model the best regression function
+
+
+\bibliographystyle{unsrt}
+\bibliography{references}
+\end{document}
