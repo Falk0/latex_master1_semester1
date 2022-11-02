@@ -43,6 +43,126 @@ The chain of image analysis process. The first part today. Preprocessing enhancm
 \end{itemize}
 
 
+\subsection{image arit´metics}
+we do aritmetics with images. Postion in matrix/image operator position in image. 
+
+\begin{itemize}
+    \item standar operation + - / *
+    \item logic operator AND OR XOR
+\end{itemize}
+
+Pitfalls could be add and divide could be outside range of 0-255 for example. Need to normalize but needs to be done before we do the operation. otherwise we might have destroyed information. Bit depth important. 
+
+Useful way is to truncate the image. 
+
+We can subtract images. Leaf example and chessboard example. Binary or greyscale images. 
+
+Atitmetics usefull when parts of images should be excluded for example.
+
+Logical operator in binary images, pixel example in slides. Nothing strange. But good method to add or remove certain objects in binary images. 
+
+\subsection{noise reduction}
+using mean or median, useful in microscopy and night pictures/astrionomy
+
+\begin{equation}
+I = \frac{1} {N} \sum_{n=1 \ldotsn }I_k
+\end{equation}
+
+Reduction of noise by using the mean of the pixels by using images of the same scene. Good in microscopy and astronomy were the scene doesn't change. 
+
+\subsection{application}
+
+\begin{itemize}
+    \item Image arithmetic useful in medication/diagnosis. Subtracting picture before contrast fluid with the picture after to get en enhancement/ better picture of the blood vessels. 
+    \item change or motion in a scene. Persons in scene before and after example. 
+    \item illumination correction by subtraction background image. Max or median of the pixel intensities. 
+\end{itemize}
+
+
+\section{intensity transfer function}
+
+\begin{equation}
+g(x,y) = Tf(x,y)
+\end{equation}
+
+\begin{itemize}
+    \item linear (neutral negative, contrast, brightness)
+    \item smooth, gamma log
+    \item arbitrary
+\end{itemize}
+
+old value on x axis new on y axis.
+
+\subsection{The negative transformation}
+the inverse 
+\begin{equation}
+g(x,y) = max - f(x,y)
+\end{equation}
+
+\begin{equation}
+\begin{aligned}
+\begin{bmatrix} 255& 254& 253 \\ 
+                125& 130& 110 \\ 
+                4& 3& 0 \end{bmatrix} 
+                \Rightarrow 
+\begin{bmatrix} 0& 1& 2 \\ 
+        130& 125& 145 \\ 
+        251& 252& 255
+        \end{bmatrix}
+\end{aligned}
+\end{equation}
+
+useful in medical image processing. Retina example. Easier to distinguish brighter lines/object. Sometimes the opposite.
+
+\subsection{Brightness}
+If we add a constant to the image it becomes brighter. Subtracting will make it darker. C positive integer or
+
+\begin{equation}
+g(x,y) = f(x,y) + C
+\end{equation}
+
+
+\subsection{Contrast}
+By multiplying the image we spread out the information and increases the contrast
+
+\begin{equation}
+g(x,y) = f(x,y) \times C, C > 1
+\end{equation}
+
+if C < 1 reduce the contrast. 
+
+
+\subsection{Gamma transformation}
+
+\begin{equation}
+g(x,y) = C \times f(x,y)^{\gamma}
+\end{equation}
+
+Computer monitors $ \gamma \approx 2.2$
+
+\begin{itemize}
+    \item Computer monitors $ \gamma \approx 2.2$
+    \item eyes $\approx 0.45$
+    \item microscopes $\approx 1$
+\end{itemize}
+
+microscopes should have 1. 1 to 1 ratio. Lower gamma brighter image. Gamma high, darker. 
+
+\subsection{Log transformation}
+Used to visualize dark regions of an image. To display the fourier spectrum. Enhance the brighter regions. 
+
+\subsection{arbitrary}
+only one output per input. Possibly not continuous.
+
+
+\section{Intensity histogram and histogram equalization}
+
+
+
+\begin{equation}
+g(x,y) = Clog(1 + f(x,y))
+\end{equation}
+
 \bibliographystyle{unsrt}
 \bibliography{references}
 \end{document}
