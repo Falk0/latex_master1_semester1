@@ -149,7 +149,11 @@ Computer monitors $ \gamma \approx 2.2$
 microscopes should have 1. 1 to 1 ratio. Lower gamma brighter image. Gamma high, darker. 
 
 \subsection{Log transformation}
-Used to visualize dark regions of an image. To display the fourier spectrum. Enhance the brighter regions. 
+Used to visualize dark regions of an image. To display the Fourier spectrum. Enhance the brighter regions. 
+
+\begin{equation}
+g(x,y) = Clog(1 + f(x,y))
+\end{equation}
 
 \subsection{arbitrary}
 only one output per input. Possibly not continuous.
@@ -157,11 +161,70 @@ only one output per input. Possibly not continuous.
 
 \section{Intensity histogram and histogram equalization}
 
+Gray scale histogram show how many pixels at each intensity level. 
+
+Normalized histogram: normalized by the total number of pixels in the image. Histogram show intensity distribution. How many pixels of certain intensity.
+
+Intensity histogram doesn't say anything about the spatial distribution of pixel intensities. Images with the same pixels histogram can  be totally different.
+
+What do we use them for? 
+\begin{itemize}
+    \item Thresholding, intensity threshold. Decide intensity all above or under is background. Works with bi-modal histogram
+    \item analyze the brightness and contrast
+    \item histogram equalization
+\end{itemize}
+
+Analyze the brightness. See the transformation "chopping" the histogram. Could see that information might be missing. Low contrast = compressed histogram. When increasing we stretch the histogram. Transfer function slope. 
+
+\subsection{histogram equalization}
+create an histogram with evenly distribution grey levels. for visual contrast enhancement. The goal is to flatten the histogram, produce the most even histogram. 
+
+\subsection{Cumulative histogram}
+sum the number of pixels along the x axis intensity.
+Steep slope. Intensely populated parts of the histogram. Flat slope: sparsely populated parts of the histogram. Strive to a even slope. 
+
+\subsection{example CDF}
+Multiplying the CDF value with  number of gray levels -1 gives the intensity transfer function. We can the map the new gray level values into the number of pixels. it possible that two bins will be mapped to the same new position. 
+
+\textcolor{red}{look at this again}
+
+\subsection{local histogram equalization}
+useful when only parts of image need to be enhanced 
+
+\subsection{Conclusion}
+\begin{itemize}
+    \item useful when histogram narrow
+    \item drawback, amplifies noise, can produce unrealistic transformation
+    \item information can be lost. no new information gained. 
+    \item Not invertible, usually destructive. 
+\end{itemize}
+
+Usefulness depends on the amount of different intensities. 
+
+\subsection{Histogram matching}
+Want to mimic histogram of another image. Compute the histograms and CDF for each image. For each gray level $G_1 \begin{bmatrix} 0& 255 \end{bmatrix}$ find graylevel $G_2$ so $F_1(G_1) = F_2(G_2)$
+The matching function: $M(G_1) = G_2$
+
+Not always the best solution either. 
 
 
-\begin{equation}
-g(x,y) = Clog(1 + f(x,y))
-\end{equation}
+\section{Summary}
+
+\begin{itemize}
+    \item Many common tasks can be described by image arithmetic
+    \item histogram eq useful for visualization 
+    \item watch out for information leaks
+\end{itemize}
+
+to think about
+\begin{itemize}
+    \item relation between arithmetic and linear transfer function
+    \item what can we know of an image from the histogram
+    \item 8-bit image A, how will it look like B = 255*(A+1)
+    \item conclusion if first last column really high?
+    \item better resolution combining multiple images of same sample?
+\end{itemize}
+
 
 \bibliographystyle{unsrt}
 \bibliography{references}
