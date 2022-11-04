@@ -1,0 +1,103 @@
+\documentclass[a4paper]{article}
+
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage{textcomp}
+\usepackage[english]{babel}
+\usepackage{amsmath, amssymb}
+\usepackage{natbib}
+\usepackage{float} 
+\usepackage[caption = false]{subfig}
+\usepackage{listings}
+\lstset{
+    breaklines=true,
+    basicstyle=\tt\normalsize,
+    keywordstyle=\color{blue},
+    identifierstyle=\color{magenta},
+    frame = single
+} 
+% figure support
+\usepackage{import}
+\usepackage{xifthen}
+\pdfminorversion=7
+\usepackage{pdfpages}
+\usepackage{transparent}
+\pdfsuppresswarningpagegroup=1
+
+\title{Test title}
+\author{Linus Falk}
+\begin{document}
+\maketitle
+\section*{DBMS}
+
+meta is a description of the data. 
+
+\subsection*{typical DBMS functionality}
+\begin{itemize}
+	\item define database in terms of data types
+	\item construct or load database content
+	\item Manipulate the database, Retrieval, Querying, modification, Accessing the database through web applications
+\end{itemize}
+
+
+Application activities against a database. Quires that access the different part of data and gives a result. Transactions a set of actions, read and update. Applications should not be accesses by non authorized personal. 
+
+\subsection*{Additional DBMS functionality}
+\begin{itemize}
+	\item active processing to take internal action on data
+\end{itemize}
+
+
+\subsection*{Example of database}
+Mini-world is for example a organization. entities of the mini-world are for example in the university case: students, courses and sections (of courses).  
+
+This entities have different meta data. Courses have course name, credits etc. 
+
+\subsection*{Main characteristics of the database}
+Insulation between the program and the data. Means that me as user can change the data in the database without changing the code. Allow changing the program/code ontop without change the DMBS code. 
+Database abstraction the DBMS can give different visualization of the database for the user.
+
+DBMS allow concurrent user to retrieve and update the database. Can keep log to undo operation when transactions goes wrong. 
+
+The users can be different groups. The one who manages who design, just "watchers"  etc. 
+
+\subsection*{Actors}
+System analysts understand the user and what they need. Application programmers taking the information from the the analysis and implement from the specification. 
+
+\subsection*{Why use databases}
+Controlling redundancy in data storage. sharing with multiple users, security etc.
+Optimization of queries for efficient processing. Provides backup services, Gives different interfaces to different user classes,.
+Potential to implement standards.
+
+\section*{Entity relationship model}
+The system analysis must understand the need/scenario and build a model. ER-model is a popular method to model the needs/requirements before implementing.
+
+We use models to have a formal way to present the formula for the system. 
+
+For entities we use nouns, the relationships describe connections between entities and we can use verbs for this as name, capital letter for Entities and relationship. 
+
+\subsection*{Design}
+Begin in natural language and putting together a conceptual model (ER model) then continue with logical modelling, programing and then  
+
+\subsection*{Design progress}
+\begin{itemize}
+	\item Database deign
+	\item Application design
+\end{itemize}
+
+\subsection*{Why a conceptual model}
+More formal than natural language, to avoid misconception. Can be understood without technical background. Can be used as documentation. Rules how to make this modelling, and can therefore be transformed and mapped to the implementation. 
+
+\subsection*{Starting with a ER model}
+first try to identify the three categories first. Relationships should be links between entities. Entities got different attributes. 
+
+Tips good practice to do it minimally. Start from top left and go to bottom right. The employee works on project, going from left to right. Easier to read and understand. 
+
+
+
+
+
+
+\bibliographystyle{unsrt}
+\bibliography{references}
+\end{document}
