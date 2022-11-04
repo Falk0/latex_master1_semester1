@@ -1,53 +1,24 @@
-\documentclass[a4paper]{article}
-
-\usepackage[utf8]{inputenc}
-\usepackage[T1]{fontenc}
-\usepackage{textcomp}
-\usepackage[english]{babel}
-\usepackage{amsmath, amssymb}
-\usepackage{natbib}
-\usepackage{float} 
-\usepackage[caption = false]{subfig}
-\usepackage{listings}
-\lstset{
-    breaklines=true,
-    basicstyle=\tt\normalsize,
-    keywordstyle=\color{blue},
-    identifierstyle=\color{magenta},
-    frame = single
-} 
-% figure support
-\usepackage{import}
-\usepackage{xifthen}
-\pdfminorversion=7
-\usepackage{pdfpages}
-\usepackage{transparent}
-\pdfsuppresswarningpagegroup=1
-
-\title{Image analysis \\ lecture 2}
-\author{Linus Falk}
-\begin{document}
-\maketitle
-\section{Image enhancment}
-Enhance part of an image in some way. Transform an image into a new image. Create a better. resore information, reduce noice.
+\lesson{1}{tuesday 01 nov 2022 10:15}{Image arithmetic}
+\section{Image enhancement}
+Enhance part of an image in some way. Transform an image into a new image. Create a better. restore information, reduce noise.
 Enhance certain details, edges etc. Just look better. 
-We dont increase the information. Can be performed in spatial domain. Point process : pixel base. Filter works with neighborhood
+We don't increase the information. Can be performed in spatial domain. Point process : pixel base. Filter works with neighborhood
 Another way is in frequency domain. 
-The chain of image analysis process. The first part today. Preprocessing enhancment. We must start by understanding the problem otherwise it hard to make decisions along the chain/pipeline
+The chain of image analysis process. The first part today. Pre processing enhancement. We must start by understanding the problem otherwise it hard to make decisions along the chain/pipeline
 
 
 \begin{itemize}
-    \item image arithemic
+    \item image arithmetic
     \item intensity transfer function
     \item histogram and histogram equalization
 \end{itemize}
 
 
-\subsection{image arit´metics}
-we do aritmetics with images. Postion in matrix/image operator position in image. 
+\subsection{image arithmetic}
+we do arithmetic with images. Position in matrix/image operator position in image. 
 
 \begin{itemize}
-    \item standar operation + - / *
+    \item standard operation + - / *
     \item logic operator AND OR XOR
 \end{itemize}
 
@@ -55,14 +26,14 @@ Pitfalls could be add and divide could be outside range of 0-255 for example. Ne
 
 Useful way is to truncate the image. 
 
-We can subtract images. Leaf example and chessboard example. Binary or greyscale images. 
+We can subtract images. Leaf example and chessboard example. Binary or grey scale images. 
 
-Atitmetics usefull when parts of images should be excluded for example.
+Arithmetic useful when parts of images should be excluded for example.
 
 Logical operator in binary images, pixel example in slides. Nothing strange. But good method to add or remove certain objects in binary images. 
 
 \subsection{noise reduction}
-using mean or median, useful in microscopy and night pictures/astrionomy
+using mean or median, useful in microscopy and night pictures/astronomy
 
 \begin{equation}
 I =  \frac{1} {N} \sum_{n=1 \ldots n }I_k
@@ -70,7 +41,7 @@ I =  \frac{1} {N} \sum_{n=1 \ldots n }I_k
 
 Reduction of noise by using the mean of the pixels by using images of the same scene. Good in microscopy and astronomy were the scene doesn't change. 
 
-\subsection{application}
+\subsection*{application}
 
 \begin{itemize}
     \item Image arithmetic useful in medication/diagnosis. Subtracting picture before contrast fluid with the picture after to get en enhancement/ better picture of the blood vessels. 
@@ -93,7 +64,7 @@ g(x,y) = Tf(x,y)
 
 old value on x axis new on y axis.
 
-\subsection{The negative transformation}
+\subsection*{The negative transformation}
 the inverse 
 \begin{equation}
 g(x,y) = max - f(x,y)
@@ -114,7 +85,7 @@ g(x,y) = max - f(x,y)
 
 useful in medical image processing. Retina example. Easier to distinguish brighter lines/object. Sometimes the opposite.
 
-\subsection{Brightness}
+\subsection*{Brightness}
 If we add a constant to the image it becomes brighter. Subtracting will make it darker. C positive integer or
 
 \begin{equation}
@@ -122,7 +93,7 @@ g(x,y) = f(x,y) + C
 \end{equation}
 
 
-\subsection{Contrast}
+\subsection*{Contrast}
 By multiplying the image we spread out the information and increases the contrast
 
 \begin{equation}
@@ -132,7 +103,7 @@ g(x,y) = f(x,y) \times C, C > 1
 if C < 1 reduce the contrast. 
 
 
-\subsection{Gamma transformation}
+\subsection*{Gamma transformation}
 
 \begin{equation}
 g(x,y) = C \times f(x,y)^{\gamma}
@@ -148,14 +119,14 @@ Computer monitors $ \gamma \approx 2.2$
 
 microscopes should have 1. 1 to 1 ratio. Lower gamma brighter image. Gamma high, darker. 
 
-\subsection{Log transformation}
+\subsection*{Log transformation}
 Used to visualize dark regions of an image. To display the Fourier spectrum. Enhance the brighter regions. 
 
 \begin{equation}
 g(x,y) = Clog(1 + f(x,y))
 \end{equation}
 
-\subsection{arbitrary}
+\subsection*{arbitrary}
 only one output per input. Possibly not continuous.
 
 
@@ -176,22 +147,22 @@ What do we use them for?
 
 Analyze the brightness. See the transformation "chopping" the histogram. Could see that information might be missing. Low contrast = compressed histogram. When increasing we stretch the histogram. Transfer function slope. 
 
-\subsection{histogram equalization}
+\subsection*{histogram equalization}
 create an histogram with evenly distribution grey levels. for visual contrast enhancement. The goal is to flatten the histogram, produce the most even histogram. 
 
-\subsection{Cumulative histogram}
+\subsection*{Cumulative histogram}
 sum the number of pixels along the x axis intensity.
 Steep slope. Intensely populated parts of the histogram. Flat slope: sparsely populated parts of the histogram. Strive to a even slope. 
 
-\subsection{example CDF}
+\subsection*{example CDF}
 Multiplying the CDF value with  number of gray levels -1 gives the intensity transfer function. We can the map the new gray level values into the number of pixels. it possible that two bins will be mapped to the same new position. 
 
 \textcolor{red}{look at this again}
 
-\subsection{local histogram equalization}
+\subsection*{local histogram equalization}
 useful when only parts of image need to be enhanced 
 
-\subsection{Conclusion}
+\subsection*{Conclusion}
 \begin{itemize}
     \item useful when histogram narrow
     \item drawback, amplifies noise, can produce unrealistic transformation
@@ -201,7 +172,7 @@ useful when only parts of image need to be enhanced
 
 Usefulness depends on the amount of different intensities. 
 
-\subsection{Histogram matching}
+\subsection*{Histogram matching}
 Want to mimic histogram of another image. Compute the histograms and CDF for each image. For each gray level $G_1 \begin{bmatrix} 0& 255 \end{bmatrix}$ find graylevel $G_2$ so $F_1(G_1) = F_2(G_2)$
 The matching function: $M(G_1) = G_2$
 
@@ -225,7 +196,3 @@ to think about
     \item better resolution combining multiple images of same sample?
 \end{itemize}
 
-
-\bibliographystyle{unsrt}
-\bibliography{references}
-\end{document}
