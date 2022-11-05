@@ -1,4 +1,4 @@
-\usepackage[utf8]{inputenc}
+        \usepackage[utf8]{inputenc}
 \usepackage[T1]{fontenc}
 \usepackage{textcomp}
 \usepackage[english]{babel}
@@ -14,6 +14,9 @@
     identifierstyle=\color{magenta},
     frame = single
 } 
+\usepackage{tcolorbox}
+\newtcolorbox{example}[1]{colback=blue!5!white,colframe=blue!75!black,fonttitle=\bfseries,title=#1}
+\newtcolorbox{definition}[1]{colback=red!5!white,colframe=red!75!black,fonttitle=\bfseries,title=#1}
 % figure support
 \usepackage{import}
 \usepackage{xifthen}

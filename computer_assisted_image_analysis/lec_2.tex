@@ -70,6 +70,9 @@ the inverse
 g(x,y) = max - f(x,y)
 \end{equation}
 
+
+\begin{example}{An example}
+
 \begin{equation}
 \begin{aligned}
 \begin{bmatrix} 255& 254& 253 \\ 
@@ -83,7 +86,9 @@ g(x,y) = max - f(x,y)
 \end{aligned}
 \end{equation}
 
-useful in medical image processing. Retina example. Easier to distinguish brighter lines/object. Sometimes the opposite.
+\end{example}
+
+Useful in medical image processing. Retina example. Easier to distinguish brighter lines/object. Sometimes the opposite.
 
 \subsection*{Brightness}
 If we add a constant to the image it becomes brighter. Subtracting will make it darker. C positive integer or
@@ -174,9 +179,8 @@ Usefulness depends on the amount of different intensities.
 
 \subsection*{Histogram matching}
 Want to mimic histogram of another image. Compute the histograms and CDF for each image. For each gray level $G_1 \begin{bmatrix} 0& 255 \end{bmatrix}$ find graylevel $G_2$ so $F_1(G_1) = F_2(G_2)$
-The matching function: $M(G_1) = G_2$
+The matching function: $M(G_1) = G_2$. Not always the best solution either. 
 
-Not always the best solution either. 
 
 
 \section{Summary}
