@@ -1,0 +1,261 @@
+\lesson{3}{tuesday 08 nov 2022 10:15}{Classification}
+
+\section{Classification}
+
+
+We return to the example with blood pressure and cholesterol. We got the patient data 
+\begin{itemize}
+	\item $x_1$ change in blood pressure during exercise
+	\item $x_2$ total cholesterol
+	\item y stroke within 5 years \{-1, +1\}
+\end{itemize}
+
+Given this data \textbf{$x_*$}, we want to predict strokes within five years \textbf{$y_*$} using the training data set. 
+
+\subsection*{The expected new error of a model}
+At an unknown future point, the \textcolor{blue}{miss classification error} of the model is 
+\begin{equation}
+\textbf{1}\{y_* \neq f(x_* ; \theta) \}
+\end{equation}
+
+This is easy to interpret and easy to analyze. We now want to find $\theta$ to minimize our expected error:
+\begin{equation}
+\textbf{E}\begin{bmatrix} \textbf{1}\{ y_* \neq f(x_*; \theta\} \end{bmatrix}
+\end{equation}
+
+but as in previous case p(x,y) is Unknown! We return to:
+
+\subsection*{Learning a linear classifier}
+We can span a linear half plane by
+\begin{equation}
+\{ x \quad x^{T}\theta \quad \ge 0  \}
+\end{equation}
+for a given vector $\theta$
+
+Our linear classifier:
+\begin{equation}
+f(x;\theta) = \text{sign}(x^{T}\theta) = \begin{cases} +1, \quad x^{T}\theta \ge 0 \\ -1, \quad x^{T} \theta < 0\end{cases}
+\end{equation}
+
+Learn a model, the $\theta$ parameters by minimizing the cos function (average loss) 
+\begin{equation}
+J(\theta) = \frac{1} {n} \sum_{i=1}^{n} L(x_i, y_i ; \theta)
+\end{equation}
+
+with the aim to reduce the expected error from a new observation (new error) 
+\begin{equation}
+\textbf{E}_{new\theta}) = \textbf{E}_*\begin{bmatrix} E(f(x_*;\theta), y_*) \end{bmatrix}
+\end{equation}
+
+\subsection*{Computational challenge}
+This is a challenge to compute and it doesn't take the consideration of how close this classifier lines is put to observations. Average loss:
+
+\begin{equation}
+J(\theta) = \frac{1} {n} \sum_{i=0}^{n} L(x_i, y_i;\theta), \text{where} L(x_i, y_i;\theta) = \textbf{1}\{y \neq \text{sign}(x^{T}\theta) \}
+\end{equation}
+
+\subsection*{Loss function and classifier margin}
+The margin of the (linear) classifier is defined as: 
+
+\begin{equation}
+y \times x^{T}\theta
+\end{equation}
+
+Comparing the miss classification loss functions. The second, logistic loss: 
+
+\begin{equation}
+\begin{aligned}
+L(x,y;\theta) = \begin{cases} 0, \quad yx^{T} \ge 0 \\ 1, \quad yx^{T}\theta < 0 \end{cases} \\
+L(x, y;\theta) = \text{ln}\begin{bmatrix} 1 + e^{-yx^{T}\theta} \end{bmatrix}
+\end{aligned}
+\end{equation}
+
+The linear classifier f(x; $\theta$) = sign($x^{t}\theta$) learned by minimizing
+
+\begin{equation}
+J(\theta) \frac{1} {n} \sum_{i=0}^{n} L(x_i,y_i;\theta)
+\end{equation}
+where the logistic loss is a convex function of $\theta $(can be minimized). Like in previous regression problems we can use regularization to reduce the sensitivity of the learned model $\hat{\theta}$. We may regularize the cost by:
+
+\begin{equation}
+ J(\theta) + \lambda || \theta ||^2_2
+ \end{equation} 
+
+
+\subsection*{Discussion points* Classification}
+
+\begin{itemize}
+	\item \textbf{n what type of problems is the missclassification error an
+unsuitable performance measure?} \\
+Bad error method when it's not symmetric, could be better to classify risk of stroke instead of not. In medicine there is often a big asymmetry. Two types of error. 
+
+
+	\item \textbf{How does the missclassification loss of a linear classifier
+change if you rescale the parameters $\theta$ ?}\\
+It doesn't change, linear.
+
+
+	\item \textbf{How does the logistic loss increase with the (negative) margin
+of missclassified points.}\\
+\begin{equation}
+\begin{aligned}
+L(x,y;\theta) = \text{ln}\begin{bmatrix} 1+ e^{-yx^{T}\theta} \end{bmatrix}
+\\ \approx -y\times x^{T}\theta
+\end{aligned}
+\end{equation}
+Linearly for very "negative" numbers.  
+\textcolor{red}{LOOK at this again} 
+
+
+	\item \textbf{The logistic loss is convex in $\theta$. What does this imply in
+parameter space?}\\
+Two theories, two universes, convex and not convex in optimization. 
+
+
+
+
+\end{itemize}
+
+$
+L(x,y;\theta) \text{ convex function} \rightarrow J(\theta) \frac{1} {n} \sum_{i}^{n} L(x,y;\theta) \\ \text{ also convex func in }\theta
+J(w\theta+(1-w)\theta^{\prime}) \le wJ(\theta) + (1-w) J(\theta^{\prime}) \\ \rightarrow \text{all minima of J, arg min J. Form a convex set}$
+
+\subsection*{The best classifier}
+Search through all functions f(x) that can minimize the expected value of an new observation:
+
+\begin{equation}
+E_{new} = \textbf{E}_* \begin{bmatrix} \textbf{1} \{ y_* \neq f(x_*)\} \end{bmatrix}
+\end{equation}
+
+
+The conditional distribution for y=+1: p(y=1|x)
+
+The model that minimizes $E_{new} = \textbf{E}_* \begin{bmatrix} \textbf{1} \{ y_* \neq f(x_*)\} \end{bmatrix}$ is given by the conditional distribution:
+\begin{equation}
+\text{f}_0(x) = \text{argmax} p(y|x)
+\end{equation}
+
+
+\subsection*{Discussion point* The best classifier}
+
+\begin{itemize}
+	\item \textbf{The plot illustrates p(y = 1|x), how does p(y = -1|x) look?
+How does p(x) look?} \\
+ \begin{equation}
+    p(y =-1|x) = \begin{bmatrix} \text{complementary event} \end{bmatrix} = 1 - p(y=1 |x)
+  \end{equation}
+p(x) probability were there might be data points. 
+
+\item \textbf{How does one interpret the ‘best’ classifier?}\\
+what does this arg max p(y|x) mean. y $\in \{-1,1 \}$ 
+\begin{equation}
+\begin{cases}
++1, \quad p(1 |x) > p(-1 |x) \\
+-1, \quad p(1 | x) \le p(-1 |x)
+\end{cases} 
+\end{equation}
+\textcolor{red}{Alternative 1:}  
+\begin{equation}
+p(1 |x) > 1 - p(1 |x) \leftrightarrow p(1 | x) > \frac{1} {2}  
+\end{equation}
+
+\textcolor{red}{Alternative 2, threshold:}  
+\begin{equation}
+\frac{p(1 |x)} {(0 |x)} > 1 \rightarrow \text{threshold } \frac{p(1 |x)} {(0 |x)} > \text{T}   
+\end{equation}
+
+\item \textbf{In what types of problems can it still produce poor
+performance?}\\ 
+Same answer as before, medical example. Missing out stroke patients is serious. 
+
+\end{itemize}
+%add norm and abs snippet
+%
+
+\subsection*{Alternative loss: the likelihood perspective}
+The best classifier f$_0$(x) depends on: p(y|x). Let us now model that directly. We have the family of distribution models: 
+
+\begin{equation}
+p(y|x;\theta) = \frac{e^{yx^{T}\theta}} {1 + e^{yx^{T}\theta}}
+\end{equation}
+
+Which gives a model for f$_0$(x) also known as logistic regression
+
+\subsection*{How surprising is the training data?}
+For the model $\theta$, the surprise of the training data point $(x_i,y_i$ is given by:
+\begin{equation}
+L(x_i,y_i;\theta) = - \text{ln} p(y_i|x_i;\theta)
+\end{equation}
+
+which is also known as the negative log-likelihood loss
+
+\begin{equation}
+\hat{\theta} = \text{arg min} \frac{1} {n} \sum_{i=1}^{n} L(x_i,y_i;\theta)
+\end{equation}
+
+that is the maximum likelihood model of conditional distribution 
+
+\begin{equation}
+p(y|x;\hat{\theta}) = \begin{bmatrix} 1 + e^{-yx^{T}\hat{\theta}} \end{bmatrix}^{-1}
+\end{equation}
+
+For logistic distribution model, $\hat{\theta}(\text{training data)})$ matches the logistic loss minimizer. 
+
+\subsection*{Discussion points* Alternative loss}
+
+\begin{itemize}
+    \item \textbf{How does one interpret the parameters of a linear model? }\\
+    $f(x;\theta) = x^{T}\theta \rightarrow \theta_0 + \theta_1x_1 \ldots$
+
+    what mean $\theta_1$ models association with between $x_1$ and y when all other $x_i$ are fixed. 
+    Logistic distrubution:
+    \begin{equation}
+    ln(\frac{p(y=1 |x)} {p(y=-1 |x)}) = x^{T}\theta 
+    \end{equation}
+
+    $\theta$ affects the low odds for 'stroke'. \\
+
+    Special case, classes are linearly separable. 
+    \begin{equation}
+    L = \text{ln}\begin{bmatrix} 1 + e^{-yx^{T}\theta} \end{bmatrix}
+    \end{equation}
+	Can make the loss smaller and smaller by blowing up the parameters. Making it sharper and sharper. J($\theta$) has no minimal point.
+    
+    \item \textbf{Why is the surprisal equivalent to the logistic loss?} \\
+    \begin{equation}
+    p(y |x) = \frac{e^{yx^{T}\theta}} {1+ e^{yx^{T}\theta}} = \frac{1} {e^{-yx^{T}\theta} + 1} = \begin{bmatrix} 1 + e^{-yx^{T}\theta} \end{bmatrix}^{-1}  
+    \end{equation}
+
+    \begin{equation}
+    L = - \text{ln}p(x,y;\theta) = - \text{ln}\begin{bmatrix} 1 + e^{-yx^{T}\theta} \end{bmatrix}^{-1} = \text{ln}\begin{bmatrix} \ldots \end{bmatrix}
+    \end{equation}
+    negative log likelihood 
+
+    \item \textbf{What are some advantages/disadvantages of using parametric
+    distributional modelling?} \\
+    Instead of hard predictions we can get a probability. Some times called soft classification. The cons are : its an uncalibrated model. Gap in predictions.  
+
+
+    \item \textbf{How does one extend the model to handle M > 2 classes?} \\
+    The idea how to do it:
+    
+    \begin{equation}
+    \begin{aligned}
+    	y \in 1,2,\ldots,M \\ *
+    	\text{ln} \frac{p(y=1 | x)} {p(y= M | x)} = x^{T}\theta_1 \\ 
+    	\text{ln} \frac{p(y=2 | x)} {p(y= M | x)} = x^{T}\theta_2 \\
+    	\vdots \\
+    	\text{ln} \frac{p(y=M-1 | x)} {p(y= M | x)} = x^{T}\theta_{M-1}  
+    \end{aligned}
+    \end{equation}
+    
+    \begin{equation}
+    **1 \sum_{y=1}^{M} p(y |x)) = 1
+    \end{equation}
+ 	
+ 	\begin{equation}
+ 	(*)\rightarrow p(y = m |x) = p(y = M |x) e^{x^{T}\theta_m} = \frac{e^{x^{T}\theta_m}} {1 + \sum_{k=1}^{M-1}e^{x^{T}\theta_k} }  
+ 	\end{equation}
+
+\end{itemize}
+
