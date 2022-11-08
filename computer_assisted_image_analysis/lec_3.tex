@@ -1,0 +1,150 @@
+›\lesson{3}{tuesday 08 nov 2022 15:15}{Filtering part I}
+This lecture covers filtering and pre-processing, smoothing filters and edge enhancing. the second art covers filtering in Fourier domain and linear vs non-linear filters. 
+
+\section{Image pre-processing/enhancement}
+
+We want to create a better image in some sense. In visual inspection:
+\begin{itemize}
+	\item fir Visual inspection
+	\item change contrast brightness
+	\item subjective improvements
+\end{itemize}
+
+\textbf{Important} image information doesn't increase but can be better visualized 
+
+In automated analysis
+\begin{itemize}
+	\item restore an image, reduce noise
+	\item enhance certain object, what we look for, dots, edges etc
+\end{itemize}
+
+Difference between point wise operations and filtering is that we use information from more neighbor pixels. 
+
+\begin{itemize}
+	\item local neighborhood
+	\begin{itemize}
+		\item linear filter + filtering in freq domain
+		\item Non linear filter
+	\end{itemize}
+	\item linear and non linear filter is basis for conv.nn
+\end{itemize}
+
+\subsection*{Spatial filtering}
+Make some transformation based on the neighborhood of x and y. Typically move the filter row by row from top to bottom. 
+\begin{equation}
+	g(x,y) = T(f()x,y)
+\end{equation}
+Neighborhood, filter kernel, windowing function: the same thing. Inside we find weights. 
+
+\subsection*{Mean filter}
+Smoothing of sharp variation in intensity of the image. We start top left and move pixel by pixel through the row with the window function with the weight $\frac{1} {N} $ with N is the number of pixels in the window function. 
+What do we do with the edges of the image? MATALB set everything outside the image is set to zero. So the edges becomes darker. Alternative is to reduce the window. Another alternative is to mirror the image but is computational heavy and introduces "false" information.
+
+\subsection*{The window}
+The local neighborhood. The window is often square or disc shaped when becoming bigger. Increasing the size of the window makes for a smoother image. So only the \textbf{low frequency} variations in the image are kept, while \textbf{high frequency} variations is removed. The filter allays sums to one.
+
+\subsection*{Gauss filtering}
+the Gaussian distribution got the area 1 under the curve and we can use this for filtering. 
+\begin{itemize}
+	\item Smoothing, reduces noise
+	\item Less smoothing then mean but blur details less
+	\item original intensity will be kept in a uniform part of the image
+\end{itemize}
+
+Gaussian filtering can be used for shading correction or remove/ decrease background variation. Take an input image, use Gaussian filtering, take the filtered image and subtract or divide from the original. 
+
+\subsection*{Edge enhancing filters}
+Enhances variations/edges, an edge can be seen as the same as gradient. 
+
+\begin{example}{Example: Laplace filter}
+\begin{equation}
+\begin{bmatrix} -1& -1& -1\\ -1& 8& -1 \\ -1& -1& -1 \end{bmatrix}
+\end{equation}
+\end{example}	
+
+The reason is if we want to find edges we want an output were we have changes not were the image is uniform. The filter enhance changes and uniform places are set to zero. Laplace filter, the filter sums up to zero.  
+
+
+\subsection*{Laplacian operator}
+Linear differential operator approximating the second derivative Produces only magnitudes and no direction information. The may result in two edges if there are a thin line. It is rather noise sensitive. 2nd derivative = line detector. The crisp filter, a visually sharper image can be obtained by adding the original image and the filtered image. This can also be obtained by adding 1 to the central weight of the filter. 
+
+\begin{equation}
+\text{Input}
+\begin{bmatrix} & & \\ &1 & \\ & &   \end{bmatrix}
+\text{Laplace}
+\begin{bmatrix} & -1& \\ -1&4 &-1 \\ & -1&   \end{bmatrix}
+\text{Crisp}
+\begin{bmatrix} & -1& \\ -1&4 &-1 \\ & -1&   \end{bmatrix}
+\end{equation}
+
+These are linear filter so we can do it one step. 
+
+\subsection*{Sobel operator}
+Approximation of the first derivative. Finds edges (gradients) in different directions. 
+\textcolor{red}{Read more about this}
+
+\begin{example}{Example: Sobel operators }
+ \begin{equation}
+\begin{bmatrix} 1& 0& -1\\ 2& 0& -2\\ 1& 0& -1  \end{bmatrix}
+\begin{bmatrix} -1& 0& 1\\ -2& 0& 2\\ -1& 0& 1  \end{bmatrix}
+ \end{equation}
+\end{example}	
+
+flip filter to find different edges. 
+
+\subsection*{DoG: Differences of Gaussian}
+By combining smoothing filters of different size, edges can be detected. Think the first filter remove some of the high, the new remove more of them. And if we subtract the filtered images we get those higher frequency content. 
+
+\section{Frequency domain filtering}
+Frequency = rate of change. High freq. corresponds to sharp edges, fine detail and noise. Low freq. correspond to smoother and slower changes. 
+
+
+Fourier transform: Functions that are not periodic bit with finite area under a curve, such as an image can be expressed as the integral of sines and cosines of different frequencies and weights. Representation using Fourier series or transforms allow for complete recovery of the original function. Fourier transform are used for: 
+\begin{itemize}
+	\item To reduce periodic noise
+	\item To smooth or low pass
+	\item To enhance details, high pass and band pass
+	\item To save time convolution in time domain = multiplication in frequency domain. 
+\end{itemize}
+
+The 2D discrete Fourier transform, and to get back using the inverse transform. 
+
+\begin{equation}
+\begin{aligned}
+F(u,v) = \sum_{x=0}^{M-1}\sum_{y=0}^{N-1} \text{f}(x,y)e^{-2j \pi(ux/M+vy/N)}  \\
+f(x,y) = \frac{1} {MN} \sum_{u=0}^{M-1}\sum_{v=0}^{N-1} \text{F}(u,v) e^{j2\pi (ux/M + vy/N)}
+\end{aligned}
+\end{equation}
+
+
+At the center of the image we got the mean value of the image. Higher frequency moving out from the center. Some lines can appear in the transformed image (Fourier spectra). These line show were lot of differences/edges changes are present. Repeating pattern can become clear to see. 
+
+\subsection*{Some differences to continuous FT}
+DFT works on finite images with M $\times$ M pixels. $\rightarrow$ Frequency smoothing
+DFT uses discrete sampled images i.e. pixels $\rightarrow$ aliasing
+DFT assumes periodic boundary conditions $\rightarrow$ Centering, edge effects. Good thing to have when capture image to have less important information in the edges. 
+ 
+
+\subsection*{Convolution}
+DFT(f*g) = DFT(f) $\times$ DFT(g) much faster with multiplication in freq. domain. 
+
+Smoothing in spatial domain is same as low pass filtering in frequency domain.
+
+Convolution $N_1^{2}N_2^{2}$ operations. 
+DFT: 4 $N^{2}$Log$_2$ N
+
+Use convolution for small convolving functions. DFT for large convolving functions.
+
+\subsection*{Noise}
+All images contains noise. It can be noise from sensors, transmission, storage. Spatially independent noise can be removed by smoothing. Periodic noise is better removed in frequency domain.
+
+\subsection*{Relationship between convolution and correlation}
+Convolution is equivalent to correlation if you rotate the convolution kernel by 180 degrees. Compute the correlation of the template image with the original image by rotating the template image by 180 degrees and then using fft based convolution (multiplication).
+
+
+\section{Comparing linear and non-linear filters}
+Linear filters (mean, Gauss, Sobel) we can add this filter and get the same result. filter(f1 + f2) = filter(f1) + filter(f2). Negative values should not be set to zero if this shall work. Linear filter are also shift invariant: filter(shift(f)) = shift(filter(f)). Same behavior regardless of pixel location. Linear filter have a correspondence in frequency domain. Linear filters are often separable, can be written as a product of two or more simple filters. Typically a 2D convolution operation can be separated into two 1D operations. This reduces computational cost. 
+
+Non linear filters like median, min and max and other morphological filters \textbf{DO NOT fulfill this properties}  
+
+
