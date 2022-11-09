@@ -1,0 +1,121 @@
+\lesson{4}{wednesday 09 nov 2022 10:15}{Classification}
+Material from 2020 course in SML at Uppsala university 
+
+\section{Multivariate Gaussian density}
+
+The p-dimensional Gaussian probability density function with mean vector $\mu$ and covariance matrix $\Sigma$ is, 
+\begin{equation}
+N(x| \mu, \Sigma= \frac{1} {(2\pi)^{p/2}|\Sigma|^{1/2}}e^{-\frac{1} {2} (x-\mu)^{T}\Sigma^{-1}(x-\mu)} 
+\end{equation}
+
+where $\mu$ : $p \times 1$ vector and $\Sigma$ : $p \times p$ positive definite matrix.
+
+If we let \textbf{x} $= (x_1, \ldots, x_p)^{T}  tilde N(\mu,\Sigma)$ 
+
+\begin{itemize}
+	\item $\mu_j$ is the mean of $x_j$
+	\item $\Sigma_{jj}$ is the variance of $x_j$
+	\item $\Sigma_{ij} (i \neq j)$ is the covariance between $x_i$ and $x_j$
+\end{itemize}
+
+\section{Linear discriminant analysis, LDA}
+Here we need,
+\begin{itemize}
+	\item The prior class probabilities $\pi_m$, p(y=m), m $\in \{1,...,m\} $
+	\item The conditional probability densities of the input x, $f_m(x)$, p(x |y=m) for each class m. 
+\end{itemize}
+
+This will give us the model:
+
+\begin{equation}
+g_m(x) = \frac{\pi_mf_m(x)} {\sum_{m=1}^{M} \pi_mf_m(x)} 
+\end{equation}
+
+For \textbf{first task} a natural estimator is the proportion of training samples in the m th class.:
+
+\begin{equation}
+\hat{pi_m}=\frac{1} {n} \sum_{i=1}^{n} \text{\textbf{I}} \{ y_m = m\} = \frac{n_m} {n} 
+\end{equation}
+
+where n is the size of the training set and $n_m$ the number of training samples of class m. 
+
+for the \textbf{second task} a simple model is to assume that $f_m(x)$ is a multivariate normal density with mean vector $\mu_m$ and covariance matrix $\Sigma_m$
+
+\begin{equation}
+f_m(x) = \frac{1} {(2\pi)^{p/2}|\Sigma|^{1/2}} e^{-\frac{1} {2}(x-\mu_m)^{T}\sum_{m}^{-1}(x-\mu_m) }
+\end{equation}
+
+if we further assume that all classes share the same covariance matrix, 
+
+\begin{equation}
+\Sigma = \text{def} \Sigma_1  = \ldots = \Sigma_M
+\end{equation}
+
+the remaining parameters of the model are: $\mu_1,\mu_2, \ldots , \mu_M, \Sigma$
+
+These parameters are naturally estimated as the sample means and sample covariance, respectively: 
+
+\begin{equation}
+\begin{aligned}
+\hat{\mu}_m = \frac{1} {n_m} \sum_{i:y_i=m}^{} x_i \quad m = 1, \ldots,M \\
+\hat{\Sigma} = \frac{1} {n-M} \sum_{m=1}^{M} \sum_{i:y_i=m}^{} (x_i - \hat{\mu}_m)(x_i-\hat{\mu}_m)^{T}
+\end{aligned}
+\end{equation}
+
+\begin{definition}{}
+Modeling the class probabilities using the normal assumptions and these parameter estimates is referred to as \textbf{Linear Discriminant Analysis (LDA)}
+\end{definition}
+
+The LDA classifier assigns a test input x to class m for which 
+
+\begin{equation}
+\hat{\delta}_m = x^{T}\hat{\Sigma}^{-1}\hat{\mu}_m - \frac{1} {2} \hat{mu}_m + \text{log}\hat{\pi}_m
+\end{equation}
+
+is largest, where 
+
+\begin{equation}
+\begin{aligned}
+\hat{\pi}_m = \frac{n_m} {n}, \quad m = 1,\ldots,M \\
+\hat{\mu}_m = \frac{1} {n_m} \sum_{i:y_i=m}^{} (x_i-\hat{\mu}_m)(x_i- \hat{mu}_m)^{T} \\
+\hat{\Sigma} = \frac{1} {n-M} \sum_{m=1}^{M} \sum_{i:y_i=m}^{} (x_i- \hat{\mu}_m)(x_i - \hat{\mu}_m)^{T}
+\end{aligned}
+\end{equation}
+
+\subsection{Quadratic discrimination analysis}
+Question: do we have to assume a common covariance matrix? \textbf{No}, estimating a separeate covariance matrix for each class leads to the method: Quadratic discrimination analysis or QDA for short. Which one to chose has to do with the bias-variance trade of or in other words the risk of over or under-fitting. Comparing LDA to QDA:
+
+\begin{itemize}
+	\item has more parameters
+	\item is more flexible
+	\item has higher risk of overfitting (large variance)
+\end{itemize}
+
+
+\begin{example}{Example: Difference between LDA and QDA}
+\begin{itemize}
+	\item \textbf{If the optimal boundary is linear, do we expect LDA or QDA to perform better on the training set? What do we expect on the test set?} \\
+	We can always assume that QDA performs better to the test set since it is more flexible. If the optimal decision boundary is linear LDA will perform better on test data since it would not overfit.
+	\item \textbf{If the optimal decision boundary is nonlinear, do we expect LDA or QDA to perform better on the training set? What do we expect on the test set?} \\
+	If the optimal decision boundary is non linear We expect QDA to perform better on the test set.
+	\item \textbf{In general, as the sample size n increases, do we expect the test error rate of QDA relative to LDA to increase, decrease or be unchanged? Why?} \\
+	We can assume that the QDA error rate will reduce when n increases, with more n it will come close and closer to the optimal decision boundary while when n is small the risk of overfitting is increasing. 
+
+	\item \textbf{True or false: Even if the optimal decision boundary for a given problem is linear, we will probably achieve a smaller test error rate using QDA rather than LDA because QDA is flexible enough to model a linear decision boundary. Justify your answer.} \\
+	False if n is small we have a risk of overfitting
+
+\textcolor{red}{Questions copied from UU sml course material} 
+\end{itemize}
+\end{example}	
+
+\section{Parametric and non parametric models}
+The models we have discussed earlier have all been of the type parametric models: linear regression, logistic regression, LDA and QDA. These models are all parametrized with a "fixed-dimensional parameter". We are now taking a look at \textcolor{red}{Non-parametric models} that allow the model to grow with the amount of data that are available. 
+
+\subsection{k-\textbf{NN}}
+k-nearest neighbor is an example of non-parametric model. It classifies a test input x to a class according the k training samples that are nearest to our input x. 
+
+
+
+
+
+
