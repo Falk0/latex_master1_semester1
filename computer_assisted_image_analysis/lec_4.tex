@@ -1,0 +1,199 @@
+›\lesson{4}{wednesday 09 nov 2022 15:15}{Filtering part II}
+
+\section{Image filtering in frequency domain}
+
+summary, Virtually all filtering is local neighborhood operation.
+Convolution = linear and shift invariant filters, mean filter Gaussian weighted filter , kernel. 
+Many non linear filter exist also. 
+
+\subsection*{Linear neighborhood operation}
+For each pixel multiply the values in the neighborhood with the corresponding weights then sum. Is convolution as long at is symmetric. When not its a cross correlation. 
+
+a filter is symmetric if we flip it along x or y axis. 
+
+\subsection*{Correlation and convolution}
+ \begin{itemize}
+ 	\item Two fundamental linear filtering operation
+ 	\item Correlation: move a filter mask compute and sum
+ 	\item  Convolution the same as correlation but first rotate filter by 180 degrees.  
+ \end{itemize}
+ 
+ \begin{example}{Example: correlation}
+ Signal: \\
+ 0 0 0 0 0 0 1 0 0 0 0 0 0 \\
+ Filter: \\
+ 321 \\
+ Result correlation: \\
+ 0 0 0 0 1 2 3 0 0 0 0 \\
+ Result correlation: \\
+ 0 0 0 0 3 2 1 0 0 0 0 \\
+ \begin{itemize}
+ 	\item Convolving a function with a unit impulse yields a copy. Correlation we flip it. 
+ \end{itemize}
+ 
+ \end{example}	
+
+
+
+\subsection*{Convolution properties:}
+
+\begin{itemize}
+	\item Linear
+	\begin{itemize}
+		\item Scaling invariant 
+		\item Distributive 
+	\end{itemize}
+	\item time invariant
+	\item Commutative 
+	\item Associative
+\end{itemize}
+
+\subsection*{Today's lecture:}
+
+\begin{itemize}
+	\item The Fourier transform
+	\begin{itemize}
+		\item Discrete Fourier Transform 
+		\item Fourier transform in 2D
+		\item Fast Fourier Transform
+	\end{itemize}
+	\item signing filters in Fourier domain
+	\begin{itemize}
+		\item Filtering out structured noise
+	\end{itemize}
+	\item Sampling aliasing and interpolation. 
+\end{itemize}
+
+All periodic functions can be expressed as weighted sum of trigonometric functions. Even functions that are not periodic van be expressed as an integral of sines and cosines. 
+
+\textbf{Euler's formula:}
+
+\begin{equation}
+e^{i\delta} = \text{cos}\omega\delta + i sin \omega\delta, \quad \omega = 2\pi \text{f}
+\end{equation}
+
+\textbf{Fourier transform }
+\begin{equation}
+F(\omega) = \int_{-\infty}^{\infty} \ f(x) e^{i\omega x},\text{dx}
+\end{equation}
+
+\begin{equation}
+Ae^{i\omega x} + A^{*}e^{-i\omega x}
+\end{equation}
+
+for real valued signal;:
+at frequency $\omega$ we have weighted A \textcolor{red}{missing text... continue when slides uploaded}  %Continue here 
+
+We can go back with the inverse Fourier transform
+
+\begin{equation}
+f(x) = \frac{1} {2\pi} \int_{-\infty}^{\infty} F(\omega) e^{ix} \,\text{d} 
+\end{equation}
+
+\textcolor{red}{Add Image of of transform pairs here ....}  
+
+Different properties: scaling, addition translation and convolution. Convolution in frequency domain is multiplication in frequency domain, very useful.. 
+
+
+Sampling, Continuous function, sampling function and sampled function example. 
+
+Examples of DFT
+
+DFT
+\begin{equation}
+F[k] = \sum_{n=0}^{N-1} f[n] e^{-i \frac{2\pi} {N}kn } %change for bracket
+\end{equation}
+
+k is the spatial frequency.
+
+\subsection*{Discrete Fourier Transform}
+F[k] is defined on a limited domain (N samples) these samples are assumed to repeat periodically
+
+
+
+\textbf{Question: Why does the DFT only have positive freq?}\\
+Its periodic, we store one copy of it because it symmetric  
+
+\textbf{Question: what is the zero frequency?} 
+
+
+\begin{equation}
+F(k) = \sum_{n=0}^{N-1} f(n)e^{-i \frac{2\pi} {N}2n } % check this
+\end{equation}
+The exponential cancel out, become 1. and if we sum it and divide it by N we get the average.
+
+
+\section{Fourier transform in 2D}
+Simple, the FT is separable
+\begin{itemize}
+	\item perform transform x-axis
+	\item perform transform along y-axis
+	\item perform ...
+\end{itemize}
+
+2D transform pairs examples: 
+
+Taking the transform result in same size but the result is complex so we look at the magnitude. The middle is the average. The Fourier transform gives us a direct hint of the image. The frequency content in different axis.
+
+Sine like pattern gives dots in the Fourier transform, showing the frequency clearly. 
+
+We can also visualize the angle/phase. But doesn't intuitively say much. Reconstructing from only magnitude doesn't give much, the phase give some but both needed for reconstruct. 
+
+\subsection*{Computing the DFT}
+\begin{itemize}
+	\item for an image with N pixels the DFT contains N elements
+	\item each element of the DFT can be m \textcolor{red}{finish when slides are uploaded} 
+	\item a naive approach need $N^{2}$
+\end{itemize}
+
+
+\subsection*{Fast Fourier Transform }
+\begin{itemize}
+	\item clever algorithm to compute Fourier transform
+	\item runs in O(NlogN) time
+	\item works because of symmetry properties
+\end{itemize}
+
+\subsection*{Convolution in Fourier domain}
+The convolution prop in freq domain. This we can calculate the convolution through
+
+\begin{itemize}
+	\item F = FFT(f)
+	\item H = FFT(h)
+	\item G = G $\times$ H
+	\item g = IFFT(G)
+\end{itemize}
+
+Convolution is operation of O(MN) Through the FFT O(NlogN) if M larger than NlogN then its of more practical use. Use depend on size of filter. 
+
+We don't lose information going back and forth the freq domain. If no numerical/double/float error. 
+
+\subsection*{Low pass filtering}
+Linear smoothing filter are all low pass filter. Mean filter and Gauss filter. Low pass means low freq are not altered and high are attenuated. In the ideal case. 
+
+\subsection*{Highpass filtering}
+Opposite of lowpass, the unsharp mask and Laplace are highpass filter
+
+\subsection*{Bandpass filter}
+You can chose to keep one passband of frequencies to keep and filter the other.
+
+Rippling pillbox gives ringing. Image example.
+
+Gaussian filter has much smoother properties and doesn't give the same kind of ringing. 
+
+\section{Fourier analysis of sampling}
+\begin{equation}
+F(\omega) = \int_{-\infty}^{\infty} f(x) e^{-i\omega t}\,\text{dx}
+\end{equation} %check
+
+If we get a repeated copy we can reconstruct the sampled  signal. But if we get aliasing, colliding repeating part we cant. This is caused by not sampling in high enough freq. 
+
+We cut out the repeating part with a box function in frequency domain(sinc in spatial/time domain) 
+
+Nyquist theorem:  if you want to reconstruct a signal you need to sample 2 times higher than the highest frequency content. 
+
+How do we know that the captured image is band limited?
+
+
+
+
