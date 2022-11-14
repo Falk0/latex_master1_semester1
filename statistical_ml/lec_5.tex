@@ -1,0 +1,154 @@
+\lesson{5}{monday 14 nov 2022 10:15}{Bias-variance trade-off and cross validation}
+
+\section{Evaluating a supervised machine learning method}
+A machine learning model is not suppose to give only good result on the training data set, it should also give good result on unseen data out in the "wild"/in production. How we ensure this or try to ensure this befor putting it into production is described in this lecture. 
+
+\subsection*{The confusion matrix revisited}
+You always have predicted condition and true condition. 4 possible values but many different measurements. True positive, false negative, false true and so on. False positive rate, true positive rate are those in ROC plot. 
+
+\begin{equation}
+\begin{aligned}
+\text{True positive rate: }TPR = \frac{TP} {P} = \frac{TP} {FN+TP} \in \begin{bmatrix} 0,& 1 \end{bmatrix} \\
+\text{False positive rate: }FPR = \frac{FP} {N} = \frac{FP} {FP+TN} \in \begin{bmatrix} 0,& 1 \end{bmatrix} \\
+\text{Precision: Prec} = \frac{TP} {P^{*}} = \frac{TP} {FP + TP} \in \begin{bmatrix} 0,& 1 \end{bmatrix}
+\end{aligned}
+\end{equation}
+
+\subsection*{AUC}
+Area under curve or AUC, a performance measure for classifier, here taking all possible thresholds into account (can apply to ROC and Precision-recall curve). The area under the curve gives an idea how accurate the model is. 
+
+Another important curve/plot to look at to determine model performance is the precision recall curve. 
+
+
+\subsection*{Loss functions are used in learning}
+Loss is the difference between model prediction and model outcome. In parameterize methods we have loss function. During training we minimize the average loss on our training data. Some examples of loss functions:
+
+\begin{equation}
+\begin{aligned}
+\text{Linear regression: }L(\hat{y}(x;\theta),y) ) (y_i-\hat{y}(x;\theta)))^{2}\\
+\text{Logistic regression: } L(\hat{y}(x,\theta),y) = \text{log}(1+e^{-y \times \hat{y}(x;\theta)})
+\end{aligned}
+\end{equation}
+
+Evaluating our model then we are interested in the error function. Examples of error functions;
+
+\begin{equation}
+\begin{aligned}
+\text{Classification: }I\{ \hat{y}(x) = y\} ) \begin{cases}
+1, \quad \hat{y}=y \\
+0, \quad \text{otherwise} \\
+\end{cases} \\
+\text{Regression: } = (\hat{y} (x)-y)^{2}
+\end{aligned}
+\end{equation}
+
+The error function doesn't need to be the same as the loss function as in the linear regression case. The loss function is very method specific so we cant compare it between different method. We need this in the project to compare the result between them. That's why we need this error function.
+
+\begin{equation}
+\begin{aligned}
+E(\hat{y}(x),y) = \begin{cases}
+\textbf{I}\{ \hat{y}= y\} \\
+\text{False Positive rate} \\
+\text{Area under the curve (AUC)} \\
+(\hat{y} (x)-y)^{2}
+\end{cases} 
+\end{aligned}
+\end{equation}
+
+Evaluate performance on new data. What is gonna happen when we show the model new data : $\text{E}_{New}$ 
+
+\begin{equation}
+E_new = \textbf{E}_*\begin{bmatrix} E(\hat{y}(x_*),y_*) \end{bmatrix} = \int E(\hat{y}(x_*),y_*)p(x_*,y_*) \,dx_*dy_*
+\end{equation}
+
+But we dont know what $p(x_*,y_*)$ is. Maybe we can learn that from the data we got. 
+
+We can approximate integrals using enough samples (law of large numbers etc). Remember that its important to use data that is samples comes from real world distribution or production. Because it is this distribution we want to approximate. But can we approximate the $E_{New}$ with our training data... NO! because then we use the same distribution twice. Take the polynomial fitting as an example. 
+
+\subsection*{Holding out}
+We start with splitting our data into two groups: training data T and validation data. Then we have our new $E_{New}$ : 
+
+\begin{equation}
+E_{New} \approx E_{hold-out} = \frac{1} {n_p} \sum_{i=1}^{n_v} E(\hat{y}(x_i;T),y_i) 
+\end{equation}
+
+This is a good method because its easy to implement but it requires our validation set to be big to get a good approximation of our $E_{New}$ but at the same time we need a large set to train on to get good predictions. Another down side is that we don't use all our data for training. 
+
+\begin{definition}{Important! }
+Split randomly between training and validation data
+\end{definition}
+
+\subsection*{k-fold cross validation}
+Keep testing over and over again. We split the data into k batches and hold out batch L when estimating the model. Then use L to estimate $E_{New}$ and average over all k estimates. A 90 10 split is a good start:
+
+\begin{equation}
+E_{New} \approx E_{k-fold} \frac{1} {k} \sum_{\epsilon = 1}^{k} E^{(\epsilon)}_{hold-out}
+\end{equation}
+
+This gives a better approximation of $E_{new}$ but is computational heavy. This method is for one method at a time, not for comparing. This method is good to compare how well our hyper parameters are chosen. Like k in nearest neighbors or $\lambda$in regularization. But !
+
+\begin{definition}{}
+We cant use $E_{k-fold}$ to estimate $E_{New}$
+\end{definition}
+\begin{example}{}
+We set aside a test set and use this \textbf{ONLY} to estimate $E_{New}$
+\end{example}	
+
+
+We cant calculate $E_{New}$ exactly, only approximate it. 
+
+\begin{equation}
+\begin{aligned}
+\overline{E}_{train} = \text{\textbf{E}}_T \begin{bmatrix} E_{train} \end{bmatrix} \\
+\overline{E}_{New} = \text{\textbf{E}}_T \begin{bmatrix} E_{New} \end{bmatrix}
+\end{aligned}
+\end{equation}
+
+Where $\overline{\text{\textbf{E}}}_T \begin{bmatrix} \cdot \end{bmatrix}$ is the average over \textbf{Training data} T. So note here! k-fold cross-validation approximates $\overline{E}_{New}$ rather than $E_{New}$ and it is usually so that:
+\begin{equation}
+\overline{E}_{train} < \overline{E}_{New}
+\end{equation}
+
+We can from this define a gap between these: the generalization gap
+
+\begin{equation}
+\overline{E}_{New} = \overline{E}_{train} + \text{generalization gap}
+\end{equation}
+
+\begin{example}{}
+Model complexity is the models ability to adapt to pattern in the data.
+\end{example}	
+
+Higher complexity giver a lower training error but increases the generalization gap. Lower complexity gives lower generalization gap but increases training error. Think of the polynomial example again. 
+
+
+\section{Bias and variance}
+Bias is the failure to capture the reality with our model. The variance is due to inherent randomness in the world. If $z_0$ is the real position and $\overline{z}$ is our measured average then $\overline{z}-z_0$ is our bias. The variance is because of noise in the measurements, so the variance is the expected error: $\textbf{E}\begin{bmatrix} (z-\overline{z}^{2}) \end{bmatrix}$. 
+
+All of our measurements errors can be broken down to two errors: 
+
+\begin{equation}
+\begin{aligned}
+\text{\textbf{E}} \begin{bmatrix} (z-z_0) \end{bmatrix}^{2} = \text{\textbf{E}} \begin{bmatrix} ((z-\overline{z})+(\overline{z}-z_0))^{2} \end{bmatrix} = \\
+\text{\textbf{E}} \begin{bmatrix} (z-z_0)^{2} \end{bmatrix} + 2 ( \text{\textbf{E}}\begin{bmatrix} z \end{bmatrix} - \overline{z} )(\overline{z}-z_0) + (\overline{z}-z_0)^{2}
+\end{aligned}
+\end{equation}
+
+Since the middle term is zero we are left with the variance and the bias. 
+
+
+\subsection*{Bias-variance decomposition}
+We can use the decomposition of the error to our prediction, $\overline{E}_{New}$ 
+
+\begin{equation}
+\overline{E}_{New} = \text{\textbf{E}}_* \begin{bmatrix} \text{\textbf{E}}_T \begin{bmatrix} \hat{y}(x_*;T)-\overline{f}(x_*))^{2} \end{bmatrix} \end{bmatrix} + \text{\textbf{E}}_* \begin{bmatrix} (\overline{f}(x_*)-f_0(x_*))^{2} \end{bmatrix} + \sigma^{2}
+\end{equation}
+
+\begin{itemize}
+	\item \textbf{Bias} due to that the model cannot represent the true $f_0$ $\text{\textbf{E}}_* \begin{bmatrix} (\overline{f}(x_*)-f_0(x_*))^{2} \end{bmatrix} + \sigma^{2}$
+	\item \textbf{Variance} due to \underline{variability} in the training data$\text{\textbf{E}}_* \begin{bmatrix} \text{\textbf{E}}_T \begin{bmatrix} \hat{y}(x_*;T)-\overline{f}(x_*))^{2} \end{bmatrix} \end{bmatrix}$
+	\item \textbf{$\sigma$} Irreducible error, always some noise in the background
+\end{itemize}
+
+In other words: the bias is the inability of a method to describe the complicated patterns we want to describe. Low model complexity. Variance is how sensitive a method is to the training data. 
+
