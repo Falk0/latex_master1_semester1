@@ -2,7 +2,7 @@
 
 \section{Image filtering in frequency domain}
 
-summary, Virtually all filtering is local neighborhood operation.
+Summary, Virtually all filtering is local neighborhood operation.
 Convolution = linear and shift invariant filters, mean filter Gaussian weighted filter , kernel. 
 Many non linear filter exist also. 
 
@@ -81,13 +81,24 @@ F(\omega) = \int_{-\infty}^{\infty} \ f(x) e^{i\omega x},\text{dx}
 Ae^{i\omega x} + A^{*}e^{-i\omega x}
 \end{equation}
 
-for real valued signal;:
-at frequency $\omega$ we have weighted A \textcolor{red}{missing text... continue when slides uploaded}  %Continue here 
+therefore we need negative frequencies, 
+
+\begin{example}{}
+For real valued signal:
+\begin{itemize}
+	\item At frequency $\omega$ we have weight A
+	\item At frequency -$\omega$ we have weight A $^{*}$	
+\end{itemize}
+\begin{equation}
+F(-\omega) = F^{*}(\omega)
+\end{equation}
+\end{example}	
+
 
 We can go back with the inverse Fourier transform
 
 \begin{equation}
-f(x) = \frac{1} {2\pi} \int_{-\infty}^{\infty} F(\omega) e^{ix} \,\text{d} 
+f(x) = \frac{1} {2\pi} \int_{-\infty}^{\infty} F(\omega) e^{i\omega x} \,\text{d}\omega 
 \end{equation}
 
 \textcolor{red}{Add Image of of transform pairs here ....}  
@@ -101,10 +112,10 @@ Examples of DFT
 
 DFT
 \begin{equation}
-F[k] = \sum_{n=0}^{N-1} f[n] e^{-i \frac{2\pi} {N}kn } %change for bracket
+F[k] = \sum_{n=0}^{N-1} f[n] e^{-i \frac{2\pi} {N}kn } 
 \end{equation}
 
-k is the spatial frequency.
+k is the spatial frequency, k $\in \begin{bmatrix} 0&, N-1 \end{bmatrix}$, $\omega = 2 \pi k / n$, $ \omega \in  [0, \quad 2\pi ) $
 
 \subsection*{Discrete Fourier Transform}
 F[k] is defined on a limited domain (N samples) these samples are assumed to repeat periodically
@@ -114,7 +125,6 @@ F[k] is defined on a limited domain (N samples) these samples are assumed to rep
 \textbf{Question: Why does the DFT only have positive freq?}\\
 Its periodic, we store one copy of it because it symmetric  
 
-\textbf{Question: what is the zero frequency?} 
 
 
 \begin{equation}
@@ -183,7 +193,7 @@ Gaussian filter has much smoother properties and doesn't give the same kind of r
 
 \section{Fourier analysis of sampling}
 \begin{equation}
-F(\omega) = \int_{-\infty}^{\infty} f(x) e^{-i\omega t}\,\text{dx}
+F(\omega) = \int_{-\infty}^{\infty} f(x) e^{-i\omega x}\,\text{dx}
 \end{equation} %check
 
 If we get a repeated copy we can reconstruct the sampled  signal. But if we get aliasing, colliding repeating part we cant. This is caused by not sampling in high enough freq. 

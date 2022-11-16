@@ -1,0 +1,277 @@
+›\lesson{5}{wednesday 16 nov 2022 15:15}{Spectral dimension}
+Today we will discuss how we represent spectral information, w in the general expression of an image : B = F(x,y,z,t,w). Each of the pixels in an image contains measurements of the signal intensity in a certain part of the EM spectrum. 
+
+\begin{wbox}{}
+dimension xyz, time t, w wavelength color. Time beating heart example. If only one dimension signal processing
+\end{wbox}
+
+
+\section*{Color fundamentals}
+We can divide white light into seven visible colors. These are: red, orange, yellow, blue, indigo and violet. 
+
+\subsection*{Electromagnetic radiation}
+When designing a imaging system we select one or several spectral windows of the electromagnetic radiation spectrum. Example of spectrum. In the case of grey-scale images we have one window. 
+
+\subsection*{Digital cameras as Detector}
+The digital camera sensor resembles the human eye in many ways. It is sensitive to three colors. In the case of CCD sensor chip they are differentiated by a Bayer filter pattern. These values are then interpolated to achieve a full RGB colored image. 
+
+
+\subsection*{Image formation}
+The image we quire from the imaging system depends on the spectral properties of these things:
+\begin{itemize}
+	\item the illumination \quad - this is the light source, the sun, lamp, flash etc.
+	\item object/motive/scene \quad - the light is reflected, absorbed or transmitted 
+	\item the detector \quad - the sensor or eye
+\end{itemize}
+
+\subsection*{Color perception}
+Color is an interpretation of the brain of the EM radiation of the "visual spectrum". The detectors in our eyes consist of rods and cones. Cones are the ones that are sensitive to color. 
+
+The different part/objects in an image got its own spectrum, this we can measure with a spectrometer. 
+
+\begin{wbox}{}
+Could be studied as physiological topic, perceived different by different people.
+\end{wbox}
+
+
+\subsection*{Why color images?}
+With our three spectral channels in our eyes we can create a realistic representation of the spectral environment as we perceive it 
+
+
+\subsection*{Light properties}
+\textbf{Illumination}
+\begin{itemize}
+	\item Achromatic light - White or uncolored light, all visual wavelengths in complete mix
+	\item Chromatic light - colored light
+	\item Monochromatic light - single wavelength (laser)
+\end{itemize}
+\textbf{Reflection}
+\begin{itemize}
+	\item colors we see are often mixes of wavelengths
+	\item The wavelength that dominates decides the "color tone" or \textbf{hue}
+	\item if equal amount reflected an object appears to be grey
+\end{itemize}
+
+
+\subsection*{color space representation}
+\textbf{RGB space} \\
+In the RGB (red green red) space each pixel is described by the intensities of these colors it contains. The color of a pixel is defined by the position in the RGB cube where (0,0,0) is black and (1,1,1) is white.
+
+
+
+\textbf{CMYK space} \\
+In the CMYK space each pixel is describes how much pigment of each of the \textbf{primary} colors that should be used at printing. CMYK is \textcolor{blue}{subtractive} and therefore the inverse of the RGB space. 
+
+\begin{example}{RGB color images}
+ Mixing light means that the more color we add the lighter/whiter image we get. 
+ \begin{itemize}
+ 	\item R + G = Y
+ 	\item R+G+B = white
+ \end{itemize}
+ \end{example}	 
+
+
+ \subsection*{RGB color model}
+ The range is $\begin{bmatrix} 0,1 \end{bmatrix}$ for each primary color. RGB image by three grey-level images. The number of bits for each pixel in RGB is the \textbf{pixel depth} 
+
+ \subsection*{color spaces: RGB/CMY}
+ This is a hardware oriented color spaces, the RGB is closer in terms of physiological similarities (we got three types of cones) than the \textbf{psychological}. 
+ % $\[ C M Y\} = \[ 1 1 1\} - \[ R G B\}$ 
+ \begin{wbox}{}
+The diagonal in the "color box" is grey value (64,64,64). 0 to 1 as scale often used in these cases instead of 0 256. 
+ \end{wbox}
+ 
+
+\subsection*{color mixing}
+\begin{itemize}
+	\item C + M + Y = black
+	\item R + G + B = white
+\end{itemize}
+
+\begin{wbox}{}
+In printing "business" cmyk is subtractive, adding gives darker. C + M + Y = K (black)
+these color space doesn't match out eyes very good
+\end{wbox}
+
+
+\subsection*{Hue saturation and lightness, HSL}
+This is a user oriented color space, here the we have intensity decoupled from color information. 
+
+\begin{itemize}
+	\item Hue, angle
+	\item Saturation, radius
+	\item Value, height
+\end{itemize}
+
+This color space makes it easier to compare hue under varying lightning conditions of the object. 
+
+\begin{wbox}{}
+Longer out on the disc more saturation, lightness up in the "cone" and hue by rotating around the disc. We get a jump from violet to red in this color space. 0-360 degrees.
+\end{wbox}
+
+
+\subsection*{Color spaces: CIE L*a*b or CIELAB}
+This is the most complete color space and is specified by CIE in 1976. It was created to represent all colors visible for the human eye. Used as reference. The goal is to be perceptually uniform so that equal distance should have equal perceptual difference. 
+
+\subsection*{Noise in color images}
+There is Gaussian noise in all three color channels (RGB). If compared with the HSL representation there is more noise in the Hue and Saturation channels.
+
+
+\subsection*{Grey level methods on color images}
+We can use in general all image processing techniques from grey level editing on color images.  We can do this by using them on each color channel or for example only the intensity channel. No right or wrong but different results. \textcolor{red}{Be careful when using HSL, circularity in hue!} One might get color artifacts if the H channel is filtered.
+
+Using histogram equalization on all channels in HSL can give odd result. If used on the L channel we get the contrast enhancement we look for. 
+
+\begin{wbox}{}
+Filtering means creating new values. New color values from filtering will create artifacts. 
+Side notes: The hue for skin is the same regardless of you're from Africa, Asia, north Europe etc. Made it possible to identify people in a image looking at the skin of people. Histogram equalization in L channel can give better contrast and be useful. 
+\end{wbox}
+
+\subsection*{Segmentation based on Hue}
+We can set an interval for the Hue around a color and get that colored segmented in the image. 
+
+
+\subsection*{Choosing a colors space}
+A color space can be either close to the hardware or the application. The RGB space is close to the output from a CCD sensor chip. Using decoupled grey-scales can be very useful in image processing making it possible to use different grey-scale methods intuitively. Some transformations can be difficult in some color spaces, \textcolor{red}{(read more)}, singularities may exist. 
+RGB is the color space used for presenting images on display devices. 
+
+
+\subsection*{Pseudo-coloring}
+The human eye can distinguish between 30 different grey levels but up to 350k different colors. Using pseudo-coloring can make small changes in intensity more apparent for the human eye to see.
+\begin{example}{}
+The human eye is better at seeing differences in color than in intensity. 
+\end{example}	
+
+\begin{wbox}{}
+Each intensity is mapped into a look up table to give a color. There are different color maps in MATLAB: Jet, HSV, Hot etc. 
+Small intenisty changes are easier to see if mapping to color. 
+But remember its easy to trick the brain with colors. 
+
+Hue - wavelength, Lightness can be seen as gray-scale. Saturation difference: think of painting in oil and pencils or aquarel
+\end{wbox}
+
+
+
+\section{Image coding and compression}
+Data and information is \textbf{not} the same. Data is the means with which information is expressed. So the amount of data can be much more than the information. This extra or redundant data does not provide us with more information and with image coding or compression we can reduce this waste of storage while keeping the information. 
+
+
+
+
+\textbf{Image coding:} this is how the image data can be represented 
+
+\textbf{Image compression} We use to reduce the amount of data that is required to represent the image. 
+
+\subsection*{Image compression categories}
+\begin{itemize}
+	\item \textbf{Reversible} (Lossless) \\
+	The image is identical to to image before compression. This is often required when doing image medical interpretations or required in image analysis applications. The compression ratio is typically $\approx$ 2 to 10 times
+	\item \textbf{Non-reversible} (lossy) With this compression we lose information. This compression is often used in image communication in devices like compact cameras, video or on the internet. Here the important part is that the image look "nice". The ratio of compression is often 10-30 times.
+\end{itemize}
+
+\begin{wbox}{}
+Decompression needed to "look" at the image again, this takes also time and should be considered. 
+\end{wbox}
+
+
+\begin{definition}{Objective measures of image quality}
+\begin{itemize}
+	\item Absolute error\\
+	\begin{equation}
+	e(x,y) = \hat{f}(x,y) - f(x,y)
+	\end{equation}
+	\item Total error \\
+	\begin{equation}
+	e_{tot} = \sum_{x=0}^{M-1} \sum_{y=0}^{N-1} (\hat{f}(x,y) - f(x,y))
+	\end{equation}
+	\item Root mean square error RMSE\\
+	\begin{equation}
+	e_{RMS} = \frac{1} {MN} \sqrt{\sum_{x=0}^{M-1} \sum_{y=0}^{N-1} (\hat{f}(x,y) - f(x,y))^{2}}
+	\end{equation}
+\end{itemize}
+\end{definition}
+
+\begin{wbox}{}
+$\hat{f}$ is the compressed image. Most common to use rms error. 
+\end{wbox}
+
+
+\subsection*{Problems measuring quality}
+THe perception of the image quality is not always the same as the objective image quality. We can solve this problem by letting a number of persons rate the image on some sort of scale. The result will be a subjective measure of how we perceive the quality (fidelity).
+
+\subsection*{Different types of redundancy}
+\begin{itemize}
+	\item \textbf{Coding redundancy,} some grey levels more common\\
+	Basic idea is that different grey level occur with different probability. We use therefore a shorter code word for the common grey levels, variable code length
+	\item \textbf{interpixel redundancy,} same grey level cover a large area \\
+	Adjacent pixels are often correlated, the value of neighboring pixels of observed pixel can often be predicted from observed pixel.
+	\item \textbf{Psycho-visual redundancy}, we can only resolve $\approx$32 grey level \\
+	If the image is only used for visual observation, much information can be removed without changing the the visual quality. This process is often irreversible.
+\end{itemize}
+
+\begin{wbox}{}
+Looking at the histogram can be useful for coding redundancy.
+\end{wbox}
+
+
+\subsection*{Huffman coding - Coding redundancy}
+This type of code is completely reversible/lossless. The table for translation is stored with the coded image. We get a resulting code that is unambiguous. The Hoffman code doesn't take correlation between adjacent pixels into consideration \textcolor{blue}{See example in lecture slides} 
+
+
+\subsection*{Run-length encoding - interpixel redundancy}
+The code words are made up of a pair (g, l) where g is the grey-level and l is the number of pixels with that grey-level (length or "run"). The code is calculated row by row. An example of use if in old fax machines. This method is reversible 
+
+
+\subsection*{Difference coding - interpixel redundancy}
+In this method we keep the first pixel value and then convert the rest as the difference of the previous pixel. This code is calculated row by row and is reversible.
+\begin{wbox}{}
+result in low numbers and can be saved with small number of bits. 
+\end{wbox}
+
+
+\subsection*{Transform coding - Psycho visual}
+In steps: subimage (size N$\times$N) , decomposition, transformation (Fourier, cosine etc.), quantization (compression achieved in this step) and coding.  
+
+\begin{wbox}{}
+JPEG based on cosine transform, separates RGB to HSL channels
+give blocking and ringing artifact. Run lenght coding.
+JPEG2000 based on wavelettransform. "more sophisticated"
+\end{wbox}
+
+
+\subsection*{File formats - Lossless}
+\begin{itemize}
+	\item \textbf{TIFF,} flexible format that support upto 16bit/pixel in the 4 channels RGB + transparency \textcolor{red}{read more about bits per pixel}. Tiff uses several different compression methods, Huffman and LZW
+	\item \textbf{GIF,} support of 8bits/pixel in 1 channel, that is 256 colors. LZW compression and support animations 
+	\item \textbf{PNG,} support 16 bits/pixel in 4 channels. Uses \textbf{deflate} compression LZW and Huffman. Is good when interpixel redundancy is present \textcolor{red}{?}  
+\end{itemize}
+
+\begin{wbox}{}
+A tiff image can have transparent areas
+\end{wbox}
+
+
+\subsection*{Vector-based file formats}
+This format uses predefined shapes
+
+\begin{itemize}
+	\item \textbf{PS, PostScript} page description format to send text documents to printers.
+	\item \textbf{EPS, Encapsulated PostScript} can embeds raster images internally using TIFF format
+	\item \textbf{PDF} widely used for document... support embedding of fonts and raster/bitmap images. But bevare choice of coding since both lossy and lossless compression is supported.
+	\item \textbf{SVG. Scalable Vector Graphics} is based on XML and support both static and dynamic content. Supported by the majority of web browsers. 
+\end{itemize} 
+
+
+\subsection*{How to choose file format}
+In image analysis are lossless formats vital and TIFF is often used. For use on the internet JPEG for photos, PNG for illustrations, GIF for smaller animations and SVG for logos etc. 
+
+
+
+
+
+
+
+
+
+
+
