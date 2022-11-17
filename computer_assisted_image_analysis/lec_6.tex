@@ -1,0 +1,244 @@
+\lesson{6}{thursday 17 nov 2022 13:15}{Image segmentation}
+
+
+
+\section{Segmentation}
+This lecture will cover image segmentation, how we separate objects in images from the background. 
+
+
+\begin{itemize}
+	\item what is image segmentation
+	\item intensity threshold
+	\item edge-based thresholding
+	\item region based thresholding
+	\item template matching for segmentation
+\end{itemize}
+
+\subsection*{what is image segmentation}
+We divide images into parts : regions/objects. This corresponds to what we are interested in. Two different types
+
+\textbf{semantic} all pixels is in a class, what is foreground or background
+
+\textbf{instance} object labeling. know who the person in the image is
+
+Segmentation is also finding patterns or edges between patterns. 
+
+\subsection*{Why segmentation}
+Its one of the first step, like we want to count or find things in images, find how large size of something. Find were things are positioned, in front or behind etc. First step in training AI applications.
+
+\begin{itemize}
+	\item counting number of object of certain type
+	\item measure geometric objects, area 
+	\item study properties of objects, intensity or texture for example
+	\item study what between relationships  different objects
+\end{itemize}
+
+\subsection*{Segmentation is difficult}
+There is no universal solution. What can we see in the image and how can we use of it. How can we make it easier to solve the problem. Avoid illumination that are uneven for example. Simplify by using proper background and illumination. Important to think about what can be done before starting the image analysis and before image acquisition.  
+
+Classical approach to find first instances. The combination of solutions is often the best. 
+
+It is an ill posed problem: What question do we want to answer. Not always straightforward. 
+
+\subsection*{Grey-level intensity thresholding}
+
+\begin{itemize}
+	\item Global, classifies each pixel as object or background depending on a threshold level T.
+	\item local or adaptive, T depends on local neighborhood
+	\item hysteresis, combination of results from 2 thresholds. 
+\end{itemize}
+
+
+Histogram is useful to find T when there are distinct peaks. If illumination is less uniform it might fail. There will not be two distinct peaks. Is the histogram uniform or don't have distinct peaks we cant use threshold segmentation. Pre processing is therefore important when doing segmentation. 
+
+\begin{example}{Example: Thresholding algorithm}
+\begin{enumerate}
+	\item Choose initial threshold $T_0$ (as the mean pixel intensity of image)
+	\item define f(x,y) > $T_0$ as background and f(x,y) < $T_0$ as foreground.
+	\item calculate mean intensity for $\mu_{bg}$ background and foreground $\mu_{fg}$
+	\item set next threshold $T_i = (\mu_{bg}+\mu_{fg})/2$
+	\item  repeat 2 - 4 until stopping critera: $T_i = T_i -1$ is fulfilled.
+\end{enumerate}
+
+\end{example}	
+
+\subsection*{Otsu's}
+Widely used method.  Minimize within class variance which is equivalent to maximize the between class variance. 
+
+\begin{equation}
+\sigma^2_{between}(t) = P_{bg}(t) P(_{fg}(t) (\mu_{bg}-\mu_{fg})^{2}
+\end{equation}
+
+where $P_{bg}$ is the probability that a pixel belong to the background, at threshold t, and $\mu_{bg}$ is the mean value of all background pixels. \textbf{choose the t that maximizes $\sigma^2_{between}$}
+
+\subsection*{Other approaches}
+Manually choose a T-level on training set. If imagining conditions are fixed. Other way is to priori knowledge. if we know how many pixels that the object should be we can look for that many even though the illumination is bad. 
+
+\subsection*{adaptive local thresholding}
+Compute a local threshold, compute a T or each pixel by filtering. Use threshold on regions of the image and then combine the results. We must choose size of regions and there is risk of artifact along the borders. Doesn't always work since there could be regions without objects.
+
+\textbf{Adaptive,} Its useful when illumination is not even. It is based on the local neighborhood of the pixel. This is often equivalent to preprocessing followed with thresholding 
+
+
+\subsection*{Hysteresis thresholding}
+We specify two intervals that we know our object is in. certain above and under. $T_{high}$ and $T_{low}$. Classify pixels with brighter than $T_{high}$ to definitively object and darker then $T_{low}$ definitively  background. Between these values are considers uncertain. In the last step we classify uncertain pixels as objects if they are connected to a pixel that is label definitively object. 
+
+
+\subsection*{refeined alternative definitions}
+Divide instances. Extract measurement for each instances. We have found the coins but now we want to know which type there are as an example. We need to decide how we define an object. 
+
+\subsection*{connected component labeling}
+To identify objects we can use connected component labeling.
+
+\begin{example}{Component labeling }
+First pass
+\begin{itemize}
+	\item iterate throuhg each element row by row then column
+	\item if the element is not the background
+	\begin{itemize}
+		\item get neighboring elements of current element
+		\item if there are non, set unique label to current element. 
+		\item otherwise find neighbor with smallest label and assign current element
+		\item store the equivalence between neighboring labels. 
+	\end{itemize}
+\end{itemize}
+second pass
+\begin{itemize}
+	\item iterate through element on data row by row then by column
+	\item if element not background, relabel the element with lowest equivalent label
+	\begin{itemize}
+		\item relabel the element with the lowest equivalent label
+	\end{itemize}
+\end{itemize}
+\end{example}	
+
+
+
+\begin{definition}{Definition: }
+\begin{itemize}
+	\item 4 neighboring a side connected to another pixel that not is background. 
+	\item 8 neighboring. with connected to another pixel by the corners also
+\end{itemize}
+\end{definition}
+
+
+if we say there is 4 connection in object, then the background is 8-connect. 
+which one we use depend on what object we are looking for. Very thin object is better to use 8-connectivity. Only look at them that could have been changed. 
+
+\subsection*{Region based segmentation}
+\textbf{Region splitting} Begin with setting up the criteria for what a uniform area is, example: mean variance etc. Proceed with splitting the image, check each subimage if it is uniform, if not continue splitting this piece into new pieces. Then compare regions with neighboring regions and merge if uniform. Repeat this until noting happens. 
+
+\textbf{Region growing} find starting point include neighboring pixels with similar features. Continue until all pixels bin included with one type of starting pixel. Problem can be to determine what these features are. 
+
+\subsection*{watershed segmentation}
+Think of image like a landscape topography. Could be used on raw images or prepossessed like edge enhanced images etc. 
+
+Any image can be shown as a landscape, use the intensity as "height". If we let a drop of water is flowing down this landscape from above, The other way around is filling it from below and see where it goes. 
+
+We give local minimum drilled holes and then start filling, assign with a label when the water reach each label. The inverted image can be useful after using the method also two view the "mountains" 
+
+
+
+\subsection*{Distance transform}
+If we input a binary image we set the objects to 1 and the background to 0. The output would be in each pixel of the background is the distance to the closest object. The output is like a "chessboard" but note that the distance put the weight equal to straight and diagonal steps. After transformation the object get the value 0. 
+
+\subsubsection{Algorithm for distance transform}
+
+\begin{definition}{Distance transform: cityblock}
+
+\begin{itemize}
+	\item p = current pixel in image
+	\item $g_1 - g_4$ = neighbor pixels
+	\item $w_1 - W_4$ weight according to choice of metric
+\end{itemize}
+
+\begin{enumerate}
+	\item We set object pixels to 0 and background to max for example 255
+	\item Forward pass, from start (0,0) position to the max coordinates. \\
+	if p > 0, p = min($g_i + w_i$), i = 1,2,3,4
+	\item Backward pass, from max coordinates to (0,0) \\
+	if p > 0, p = min (p, min($g_i + w_i$)), i = 1,2,3,4 (setting the pixel to do min of ...)
+\end{enumerate}
+
+Depending on the approximation of the Euclidean distance the weight may have different values. The kernel may have different shapes. The example above is the simplest most commonly used.
+
+Example in old zoom lecture on studium. 
+
+Some of these methods approximate a circle differently, chessboard and cityblock (above) not so good. 
+\end{definition}
+
+
+\subsection*{Distance transform usage}
+Used to find the shortest path between two points in the image. To do this we generate distance transform of the image and then go from A to B in the direction of the the steepest gradient. It can also be used to find the radius of object that are round. Here we find the maximum value of the distance transform  which equals the radius. Assumed no normalization is used. 
+
+
+When we have overlapping it might not show up as two object. But with if knowing if the object is round we can segment it using watershed method. 
+
+\subsection*{Watershed problem and strategies}
+Each local minima results in separate region. Can give many many regions. Using smoothing filters can be used to avoid this over segmentation. You can use morphological transformations. Or set threshold to what a true valley is. 
+
+\subsection*{Seeded watershed}
+One way is to start from all local minima (discussed before) or using seeds Water shedding can only start from regions we have classified as appropriate. 
+
+
+\subsection*{Hough transform}
+To find lines. A pixel van have infinitly many lines 
+
+\begin{equation}
+\begin{aligned}
+y_i = ax_i+b \\
+\rightarrow b = -ax_i -y
+\end{aligned}
+\end{equation}
+
+This corresponds to a line in parameter space. Having two pixels we get an intersection in parameter space. 
+ \textcolor{red}{read more in book or wiki} 
+
+We use cosine or sines to represent line when the slope of the line approaches infinity.
+
+\subsection*{Segmentation by template}
+Use the template as the filter and move it over the image and calculate the correlation. Rotating the template etc to find object with different orientation. It is computational heavy to look for all possible transformation, rotations etc. Can be difficult if size varies also.   
+
+
+\subsection*{post processing}
+Opening and closing. With different sizes of filter
+
+\begin{itemize}
+	\item erosion followed by dilation \\
+	Break necks and smooth contours. 
+	\item dilation followed with erosion \\
+	Smooth contours and fuses breaks, eliminates holes
+
+\end{itemize}
+
+
+\subsection*{Summary}
+
+\begin{itemize}
+	\item Often the most difficult task to solve in image analysis.
+	\item No universal solution exist
+	\item Think what are the key things that makes me see the object, edges etc.
+	\item Optimize data collection, what can we do about background lightning etc.
+	\item Pre and post process can improve results. 
+\end{itemize}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
