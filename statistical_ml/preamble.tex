@@ -2,6 +2,29 @@
 \usepackage[T1]{fontenc}
 \usepackage{textcomp}
 \usepackage[english]{babel}
+
+\usepackage{xcolor}
+\usepackage[explicit]{titlesec}
+
+%Setting section title bg color
+\definecolor{redbg}{RGB}{235, 214, 214}
+%Setting subsection and subsubsection title color
+\definecolor{Red}{RGB}{163, 25, 25}
+
+\titleformat{\section}
+  {\normalfont\LARGE\bfseries}
+  {}
+  {0em}
+  {\colorbox{redbg}{\parbox{\dimexpr\textwidth-2\fboxsep\relax}{\textcolor{Red}{\thesection\quad#1}}}}
+
+%Underlining ruler for subsections
+\titleformat{\subsection}
+  {\normalfont\Large\bfseries\color{Red}}
+  {\thesubsection}
+  {1em}
+  {#1}
+  [{\titlerule[0.8pt]}]
+
 \usepackage{amsmath, amssymb}
 \usepackage{natbib}
 \usepackage{float} 

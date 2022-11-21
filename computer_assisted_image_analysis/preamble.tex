@@ -1,4 +1,4 @@
-        \usepackage[utf8]{inputenc}
+\usepackage[utf8]{inputenc}
 \usepackage[T1]{fontenc}
 \usepackage{textcomp}
 \usepackage[english]{babel}
@@ -18,6 +18,34 @@
 \newtcolorbox{example}[1]{colback=blue!5!white,colframe=blue!75!black,fonttitle=\bfseries,title=#1}
 \newtcolorbox{definition}[1]{colback=red!5!white,colframe=red!75!black,fonttitle=\bfseries,title=#1}
 \newtcolorbox{wbox}[1]{colback=white!5!white,colframe=black!75!white,fonttitle=\bfseries,title=#1}
+
+
+%\usepackage{xcolor}
+%\usepackage[explicit]{titlesec}
+
+
+%\definecolor{redbg}{RGB}{235, 214, 214}
+%\definecolor{Red}{RGB}{163, 25, 25}
+%\definecolor{Black}{RGB}{0, 0, 0}
+
+%\titleformat{\section}
+%  {\no
+%  {}
+%  {0em}
+%  {\colorbox{redbg}{\parbox{\dimexpr\textwidth-2\fboxsep\relax}{\textcolor{Red}{\thesection\quad#1}}}}
+
+%Underlining ruler for subsections
+%\titleformat{\subsection}
+%  {\normalfont\large\bfseries\color{Red}}
+%  {\thesubsection}
+%  {1em}
+%  {#1}
+%  [{\titlerule[0.8pt]}]
+%  \titlespacing{\subsection}{0pt}{3pt}{3pt}
+%  \let\oldtitleline\titleline
+%\renewcommand{\titleline}{\oldtitleline*}
+
+
 % figure support
 \usepackage{import}
 \usepackage{xifthen}
@@ -25,9 +53,6 @@
 \usepackage{pdfpages}
 \usepackage{transparent}
 \pdfsuppresswarningpagegroup=1
-
-
-
 \usepackage{xifthen}
 
 \def\testdateparts#1{\dateparts#1\relax}

@@ -1,0 +1,178 @@
+\lesson{7}{monday 21 nov 2022 10:15}{Objects, description and feature extraction}
+
+
+\section{Objects, description and feature extraction}
+After segmentation we have to represent, describe the object in the image. This lecture is covering these topics. 
+
+
+It is useful to know that if it's possible to "stain" what we are trying to capture with our image analysis before the image is taken with some sensor/device it can save a lot of time and make it easier to describe an object in the image analysis. For example contrast fluids in MRI scans, easier to see blood flow. 
+
+This lecture covers generic methods, as how to measure shape of objects. Not finding special features like how many spots an object got etc. 
+
+\subsection*{Representation and description}
+After we have segmented our image we want to represent object so that we can describe them. Two types. 
+
+\begin{itemize}
+	\item External (boundary): 
+	\begin{itemize}
+		\item Representation using polygons to represent the boundary for example.
+		\item Description, what is the circumference of this polygon
+	\end{itemize}
+	\item Internal (regional):
+	\begin{itemize}
+		\item Representation of the pixels inside the object
+		\item Description: what is the average color/intensity for example inside this object. 
+	\end{itemize}
+\end{itemize}
+
+Representation of the object is an encoding of the object, truthful or an approximation after segmentation. The descriptor of the the object is only an aspect of the object but could be used for classification. Careful and consider invariance due to noise, translation and/or rotation. Count of dots/spots on an object can be a descriptor for example, can be used for classification. One feature is maybe not enough. 
+
+\subsection*{Shape representation}
+It is sometimes necessary to represent an object in an less complex or more intuitive way. We can use simple descriptions like shapes instead, circles, rectangles to represent the to object. By using the boundary or segments of it we can also represent it, the boundary could be smoother to for a simpler representation. Dividing the objects into region or part is also useful sometimes. Skeleton is another way, described later.
+
+
+Remember to consider invariance because of scale, rotation etc. But it is sometimes important to be aware of the rotation of the object before doing analysis, for example the letter p and d.
+
+\subsection*{Boundary representation: Polygonal approximation}
+A common way to approximate or simplify the shape of an object is to make a polygon representation of the boundary. For closed boundaries the approximation becomes exact when the number of segments of the polygons is equal to the number of points we got in the boundary. The goal of this method is to capture the essence, the important shape of the object. But beware that this approximation can become a time consuming iterative process. A intuitive way to understand this method is to think of a rubber band being forced to the shape of the object. The interesting points is were this "band" is "breaking"/changes direction.  
+
+\begin{definition}{Algorithm: Merging techniques}
+\begin{enumerate}
+	\item Walk around the boundary and fit a least square error line to points until an error threshold is exceeded
+	\item Start a new line, an begin from 1 again
+	\item When start point is reached stop. The intersections of adjacent lines are the vertices of the polygon representation of the shape. 
+\end{enumerate}
+\end{definition}
+
+
+\begin{definition}{Algorithm: Splitting techniques}
+\begin{enumerate}
+	\item Start with an initial guess along the boundary
+	\item Calculate the orthogonal distance from the line to all points in the boundary shape. 
+	\item If max distance > a threshold value, create a new vertex there. 
+	\item Repeat until no point exceed the criterion threshold. 
+\end{enumerate}
+\end{definition}
+
+
+
+\subsection*{Boundary representation: signatures}
+Another way to represent a boundary is to use signatures. An example is using a center that we rotate around and plot the distance to the boundary from $0 \rightarrow 2\pi$. This becomes a 1D representation of a 2D boundary. We can implement this in different ways. As the example before or as an angle between the tangent in each point and a reference line (horizontal line for example). The histogram of this is called a \textbf{slope density function}. This representation is independent of translation but not to rotation and scaling. A problem with the first method is that we need to select starting point. One tips is to select a unique point along the longest axis of the image (major axis). Regarding scale problem, it can be useful to normalize by dividing the amplitude with the variance. 
+
+\begin{wbox}{}
+One way to choose center point is to fit a rectangle as close to the boundary as possible and pick the center point of the rectangle as center point. Calculating the center of mass is another but more complex way. 
+\end{wbox}
+
+\subsection*{Polar transform}
+Connected to signatures are polar transform were we resample the image along a radius, then a new radius and so on. Can be useful to check distances/patterns in circular patterns. we make a round representation linear. \textbf{Log polar transform} is a modified polar transform where we sample logarithmic instead of linearly. Here the center location of the sampling circle less important. This representation doesn't need to be of a whole image but can be used on part of images. 
+
+\subsection*{Boundary segments}
+Boundary of contain concavities, regions that goes "into" the object. This "regions" concavities carry information about the object and can be worth to decompose into segments for further analysis. A way to achieve this is to calculate the \textbf{convex Hull} of the region that is enclosed by the boundary, this is the minimal enclosing convex region. But notice that this method can be noise sensitive so it can be a good idea to use some sort of smoothing before \textbf{convex Hull} calculations. Another way is to calculate it on a polygon representation. Some terminology: 
+
+\begin{itemize}
+	\item \textbf{Convex Hull}, minimal enclosing convex region
+	\item \textbf{Convex region}, all points can be connected with a straight line inside the region
+	\item \textbf{Convex deficiency}, subtracting the hull with the object itself. How concave is the object
+	\item \textbf{Concavity tree}, generate convex Hulls and deficiencies recursively, hulls in hulls.
+	\item \textbf{Solidity}, convex Hull area/object area
+\end{itemize}
+
+\subsection*{Skeletons}
+A "curve" representation of the object. The skeletons should in general be thin, centered topologically to the original object. They are reversible. We can create skeletons by using \textbf{thinning} which is a iterative method were we remove pixels from the borders while trying to keep the overall shape and topology of the object. Beware that this method is sensitive to noise and it can be necessary to smooth before or prune afterwards. Medial axis transform, \textbf{MAT} is another way were circles are used and checking were two or more points touching the border at the same time.  
+
+\begin{wbox}{}
+Skeletons are useful to find the length of objects in images. Think of satellite images of a river or delta. 
+\end{wbox}
+
+\subsection*{Chain code}
+Chain code is a contour based shape descriptor. It describes the sequence of steps generated by walking around the boundary. It can be defined by either having 4 or 8 neighbors. Think of 4 and 8 connectivity in the segmentation chapter. The drawbacks with this is it that it gives long code, a small change of boundary changes the code, it depends on scale, starting point and rotation (we get a different code when going counter clockwise than clockwise, can be solved by difference code calculating two numbers each pass). 
+
+
+\subsection*{Descriptors}
+After representation we go to the next step which is to describe our boundaries and regions so that we later on can classify these. some simple boundary (segment) descriptors:
+
+\begin{itemize}
+	\item Length
+	\item Diameter
+	\item Minor axis (perpendicular to the major)
+	\item Basic rectangle = major $\times$ minor
+	\item Eccentricity = major/minor
+	\item Slope density function
+\end{itemize}
+
+
+\subsection*{Fourier descriptors}
+We can represent the boundary as a sequence of coordinates and treat each pair as complex number. From the discrete Fourier transform \textbf{DFT} of the complex numbers we get the Fourier descriptors, which w can restore with the inverse DFT \textbf{IDFT}. A trick we can use here is to use fewer points when transforming back. As we reduce the number of points it act as smoothing of the shape. Some shapes need more points, this is because we are trying to use cosine and sines to represent the shape. So corners with high frequency content need almost all points.
+
+\subsection*{Image moments}
+Mentioned in an example already. We measure the weighted average of the regions pixel intensities. Some simple descriptive properties of an segmented image:
+
+\begin{itemize}
+	\item Area
+	\item Total intensity (gray-scale)
+	\item centroid, (find center point)
+	\item orientation
+\end{itemize}
+
+How to calculate:
+
+\begin{equation}
+\begin{aligned}
+\text{Raw moments $M_{ij}$ - for p,q  = 0,1,2,... : } M_{ij} = \sum_{x}^{} \sum_{y}^{} x^iy^jI(x,y) \\
+\text{Area or sum of gray intensities} ) M_{00} \\
+\text{Centroid: } \{\overline{x},\overline{y} \} ) \{ M_{10}/M_{00},M_{01}/M_{00}, \} \\
+\text{Central moments - for p,q = 0,1,2,... : } \mu_{pq} = \sum_{x}^{} \sum_{y}^{}(x- \overline{x}^p) (y-\overline{y})^qf(x,y)
+\end{aligned}
+\end{equation}
+
+\subsection*{Simple regional descriptors}
+Here are some simple regional descriptors presented:
+
+\begin{itemize}
+	\item Area, the number of pixels in a region
+	\item Compactness (P2A), perimeter$^2$ / $4 \times \pi \times$area, close to 1, close to a circle
+	\item Circularity ratio, $4 \times \pi \times$area / perimeter$^2$
+\end{itemize}
+
+And some measures of graylevel:
+\begin{itemize}
+	\item Mean
+	\item Median
+	\item Max ... etc
+\end{itemize}
+
+\begin{example}{Example: Compactness}
+The Compactness of a line would be infinitely large since the area is going to zero. 
+\end{example}	
+
+
+\subsection*{Topological  descriptor}
+\textbf{Topology} is the study of the properties of a figure that are unaffected by any deformation. Examples of topological descriptors are
+
+\begin{itemize}
+ 	\item Number of holes in a region: H
+ 	\item Number of connected components: C
+ 	\item \textbf{Euler number}, E = C - H
+ \end{itemize} 
+
+ \subsection*{Texture}
+ Hard to define but are kind of patterns. Can be coarse, smooth or regular. Need of a way to quantify it. There are statistical texture descriptors:
+
+ \begin{itemize}
+  	\item Histogram based \\
+  	Calculate and normalize the histogram and the apply moment. 2nd moment: variance (contrast measure), 3rd moment: Skewness, 4th moment Relative flatness. Other common histogram based texture measures are: checking of uniform the distribution is or the average entropy, measure the variability, 0 for constant images. \textcolor{red}{read more...}. Beware doesn't tell anything of spatial distribution of pixels. 
+  	\item Local binary patterns
+  	\item Co-occurrence based, \\
+  	\textbf{see example in recorded lectures}. Some statistic measures: \textbf{Maximum probability} $max_{ij}(c_{ij})$(strongest response to P), \textbf{Uniformity} $\sum_{i}^{}\sum_{j}^{} c^{2}_{ij}$ and \textbf{Entropy (randomness):} $-\sum_{i}^{} \sum_{j}^{} c_{ij}\text{log}_2 c_{ij}$   
+  \end{itemize} 
+
+ And spectral texture descriptor: Use the Fourier transform.
+
+\subsection*{How to choose / design representations and descriptors}
+We want to find representations/descriptors that are invariant (doesn't change after operations) to transformations that is not important to the task: Noise, scale, blur etc. Create representations and descriptors that are relevant to the questions we want to answer. Its all about understanding the data, the application and the problem we are trying to solve. Be creative!
+
+
+
+
+
+
