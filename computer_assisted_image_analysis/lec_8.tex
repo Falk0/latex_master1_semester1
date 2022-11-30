@@ -1,0 +1,208 @@
+\lesson{8}{tuesday 29 nov 2022 13:15}{Classification}
+
+\section{Classification}
+In this lecture will the following topics be discussed: 
+\begin{itemize}
+	\item object vs pixel-wise classification 
+	\item how template matching can be used for segmentation/recognition
+	\item Feature vectors and feature space, scatterplots
+	\item Supervised classification
+	\item Unsupervised classification
+\end{itemize}
+
+\subsection*{What is classification}
+Its the procedure in which individual items are grouped based on some similarity between the objects and the description of the group. 
+
+
+
+\subsection*{Object and pixel-wise classification}
+In object-wise classification are the shape, size, mean intensity, mean color used to describe patterns. In pixel-wise are intensity, color, texture, spectral information used (segmentation).
+
+
+
+\subsection*{Object-wise classification}
+The workflow: Segment the image into regions and label them, (these are the patterns we want to classify). Then extract the features from each pattern, we then train a classifier on examples were the "label"/class is known. We do this to find a \textbf{discriminant function} in the feature space. To classify new examples we use this function. 
+
+
+
+\subsection*{Pixel-wise classification}
+In this case is the pattern a pixel in a non segmented image. We extract/calculate features for each pixel (grey level, color), train a classifier, use on new examples and perform. Relaxation is used to reduce noise .The neighborhood size determine the amount of relaxation. relaxation \textcolor{red}{Read more}.
+
+
+
+
+\subsection*{Matching by correlation}
+This is a variant of object-wise classification were we use a template to locate certain object/patterns. Is often used for segmentation. We use correlation to match a mask w(x,y) with the image f(x,y). We let the mask slide over the image and calculate the correlation a each position in the image. 
+
+\begin{equation}
+c(x,y) = \sum_{s}^{} \sum_{t}^{} w(s,t)f(x+s,t+y)
+\end{equation}
+
+
+
+
+
+\subsection*{Important concepts}
+The arrangement of descriptors are often called \textbf{patterns}. Descriptors are often called \textbf{features}. The pattern arrangement that are most common are called \textbf{feature vector} with n dimensions. Patterns are placed in different \textbf{classes} of objects which share common properties. A collection of classes W are denoted: W =$\omega_1, \omega_2, ..., ,\omega_W$
+
+
+
+
+
+\subsection*{Scatterplots}
+This is a good way to illustrate different relationships between features. 
+
+
+
+
+
+\subsection*{Feature selection}
+Scatterplots are an example of how we can choose between features. The goal of feature selection is to find a finite number of features that can discriminate between the classes. Just adding features without verification will often \textbf{NOT} improve the result. 
+
+
+
+
+
+\subsection*{Supervised classification - Train and classify}
+In training we try to find rules and discriminant functions that separate the different classes in the feature space, we do this by using our known examples with labels. In classification we take a new and unknown example and put it in the correct class by using the discriminant function. During supervised classification we first apply our knowledge from previous data and then classify. 
+
+
+
+
+
+\subsection*{Discriminant functions}
+A discriminant function for a class is a function that will yield larger values than functions for other classes if the pattern belongs to its class. 
+
+\begin{equation}
+d_i(\textbf{x}) > d_j(\textbf{x}) \quad j=1,2,...,W; J\neq i
+\end{equation}
+
+For W = $\omega_1, \omega_2, ..., ,\omega_W$ pattern classes we have W discriminant functions. The decision boundary between class i and j: 
+
+\begin{equation}
+d_i(\textbf{x}) - d_j(\textbf{x}) = 0
+\end{equation}
+
+
+\begin{example}{Example: Box classification}
+\begin{itemize}
+	\item Intervals for each class and feature
+	\item All objects with feature vector within same box belong to this class
+	\item Generalized thresholding
+	\begin{itemize}
+		\item Multi-spectral thresholding
+	\end{itemize}
+\end{itemize}
+\end{example}	
+
+
+
+\subsection*{Bayesian classifiers}
+This classifier includes a \textbf{priori} knowledge of class probability and cost of errors. The combination gives an optimum statistical classifier (in theory) which minimizes the total average loss. Some assumptions to simplify classifier: \textbf{Minimum distance classifier} and \textbf{maximum likelihood classifier}.
+
+
+
+
+\subsection*{Minimum distance classifier}
+Here is each class represented by its mean vector. Training is done by using pixels/objects with known class and calculate the mean of the feature vector for the object within each class. The examples are classified by finding the nearest/closest mean vector. 
+
+The limitation of this classifier comes down to how much the mean differs between the classes. The difference should be large compared to the randomness in each class mean. Optimum performance with distribution forms spherical hypercloud.
+
+
+
+
+\subsection*{Maximum likelihood classifier}
+This method classify according to greatest probability taking the variance and covariance into consideration. Here we assume each class take a Gaussian/normal distribution. The distribution within each of class can be described with mean vector and covariance matrix. 
+
+
+
+
+\subsection*{Variance and covariance}
+The variance is the spread or randomness for the class. Covariance describes the dependency/influence between the different features. We describe this with a covariance matrix. 
+
+We compute the variance with the features: $x_1,x_2,x_3,..., $, with the feature vector for object i: $x_{1,i},x_{2,i},x_{3,i},...$ and the mean for each feature and class: $x_{\text{mean}_1},x_{\text{mean}_2},x_{\text{mean}_3},...$:
+\begin{equation}
+\text{cov}(x_i,x_j) = \frac{1} {n-1} \sum_{k=1}^{n} (x_{i,k}-x_{\text{mean}_i)}(x_{j,k}-x_{\text{mean}_j})
+\end{equation}
+
+
+
+
+
+\subsection*{Assumptions on covariance matrix}
+\begin{itemize}
+	\item Case 1 (MinDist)
+	\begin{itemize}
+		\item independent features $\rightarrow$ no covariance
+		\item equal variance
+		$d_j(x) = x^{T}M_j -\frac{1} {2} m_jm_j$
+	\end{itemize}
+	\item Case 2 (UnCorrelated)
+	\begin{itemize}
+		\item independent features $\rightarrow$ no covariance
+		\item different covariance for different features
+	\end{itemize}
+	\item Case 3 (EqualCovar)
+	\begin{itemize}
+		\item same covariance for all classes
+	\end{itemize}
+	\item Case 4 (General)
+	\begin{itemize}
+		\item Different covariance matrices for all classes
+	\end{itemize}
+\end{itemize}
+
+\textcolor{red}{See lecture slides for better illustrations.} 
+
+
+\subsection*{Decision tree}
+With this method we divide samples into classes by using one threshold at a time. There are training algorithms / tree constructor algorithms.
+
+
+
+
+\subsection*{ANN artificial neural networks}
+Creates a classifier with adaptive development of the coefficient for decisions found via training. Don't need to assume normal distribution. Inspiration from the neurons in the brain. Can draw complicated decision border that are more complex than hyper quadratic. These classifiers require careful training (and a lot of data)
+
+
+
+
+\subsection*{About trained (supervised) system}
+Features should be based on their ability to separate the classes. Adding new features can result in decreased performance. It is important to have a trainings set which is much larger then the number of features. Linearly dependent features should be avoided.
+
+
+
+\subsection*{Unsupervised classification: cluster analysis}
+We can divide feature space into clusters by using the mutual similarity's in the subset elements. Its an explorative analysis. When we are done clustering we compare it with reference data and identify classes. 
+
+We first classify then apply knowledge 
+
+Example of methods:
+
+\begin{itemize}
+	\item K-means
+	\begin{itemize}
+		\item Is a top down approach 
+		\item Uses a predetermined number of clusters
+		\item Tries to find a natural centers in the data
+		\item Problem to illustrate result with more then 3 dimensions
+	\end{itemize}
+	\item Hierarchical
+	\begin{itemize}
+		\item Is most often a bottom up approach
+		\item It merges patterns until all are in one class
+		\item The user decides which clusters are natural
+		\item Result can be illustrated through a dendrogram
+	\end{itemize}
+\end{itemize}
+
+
+\subsection*{K-means clustering}
+We start with setting a number of clusters, k. Then initialize k starting points, this can be done randomly or according through some distribution. We assign each object to the closest luster and recompute the center for that cluster. Can move objects between clusters in order to minimize the variance within each cluster and maximize the variance between clusters. 
+
+\subsection*{Hierarchical clustering}
+To construct clustering tree or dendrogram we start with each object or pixel as its own class, then merge the classes that are closest according to some distance measure, then continue until only one class is achieved. We can then decide the number of classes based on the distances in the tree. 
+
+
+
+
