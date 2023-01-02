@@ -70,24 +70,30 @@ We now have the logistic regression model we need to find our parameters from (m
 
 This modification of the regression model is not "perfect" since we must use numerical methods for finding the parameters since there is no closed expression for the cost. This can be solved numerically and we can choose different solvers which all have pros and cons
 
-\begin{itemize}
-    \item 
-\end{itemize}
 
-\begin{table}[ht!]
-\centering
-\begin{tabular}{lll}\hline
- &  &  \\
- &  &  \\
- &  & \\ \hline
-\end{tabular}
-\caption{example}
-\label{tab:tab1}
-\end{table}
 
-\begin{itemize}
-    \item 
-\end{itemize}
+
+
+liblinear
+Best result combinations: [0.8739171023151606, ('Number words female', 'Number of words lead', 'Difference in words lead and co-lead', 'Number of male actors', 'Number of female actors', 'Number words male', 'Mean Age Male', 'Age Lead', 'Age Co-Lead')]
+['Number words female', 'Number of words lead', 'Difference in words lead and co-lead', 'Number of male actors', 'Number of female actors', 'Number words male', 'Mean Age Male', 'Age Lead', 'Age Co-Lead']
+
+newton
+Best result combinations: [0.8748786407766991, ('Number words female', 'Number of words lead', 'Difference in words lead and co-lead', 'Number of male actors', 'Number of female actors', 'Number words male', 'Mean Age Male', 'Age Lead', 'Age Co-Lead')]
+['Number words female', 'Number of words lead', 'Difference in words lead and co-lead', 'Number of male actors', 'Number of female actors', 'Number words male', 'Mean Age Male', 'Age Lead', 'Age Co-Lead']
+
+lbfgs
+Best result combinations: [0.8748786407766991, ('Number words female', 'Number of words lead', 'Difference in words lead and co-lead', 'Number of male actors', 'Number of female actors', 'Number words male', 'Mean Age Male', 'Age Lead', 'Age Co-Lead')]
+['Number words female', 'Number of words lead', 'Difference in words lead and co-lead', 'Number of male actors', 'Number of female actors', 'Number words male', 'Mean Age Male', 'Age Lead', 'Age Co-Lead']
+
+
+saga - LOTS OF convergence problem
+Best result combinations: [0.8739171023151606, ('Number words female', 'Number of words lead', 'Difference in words lead and co-lead', 'Number of male actors', 'Number of female actors', 'Number words male', 'Mean Age Male', 'Age Lead', 'Age Co-Lead')]
+['Number words female', 'Number of words lead', 'Difference in words lead and co-lead', 'Number of male actors', 'Number of female actors', 'Number words male', 'Mean Age Male', 'Age Lead', 'Age Co-Lead']
+
+
+Tuned Hyperparameters : {'C': 1.0, 'penalty': 'l2', 'solver': 'lbfgs'}
+Accuracy : 0.8748786407766991
 
 
 \bibliographystyle{unsrt}

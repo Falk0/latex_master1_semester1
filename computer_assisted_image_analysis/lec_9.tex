@@ -1,0 +1,206 @@
+\lesson{9}{tuesday 6 dec 2022 10:15}{Classification}
+
+\section{Classification with neural networks}
+This lecture will cover deep neural networks (\textbf{DNN}), the current state-of-the-art in classification. Deep learning algorithms are the winning method in many major competitions. DNN's can learn hierarchical features from the input together with the classification. Examples:
+
+\begin{itemize}
+	\item Object detection
+	\item Cell segmentation
+	\item Medical image segmentation
+	\item Super resolution
+	\item .... etc
+\end{itemize}
+
+\subsection*{A linear classifier and how to train it}
+We start with the problem formulation and problems. We want to classify an image given a set of discrete labels. The problems:
+
+\begin{itemize}
+	\item Semantic gap \\
+	images are represented as 3D arrays, we can have different viewpoints and variations from that.
+	\item Illumination \\
+	Lighting can be different image to image, different scenes and illumination
+	\item Deformation  \\
+	The object we want to label may take many shapes.
+	\item Occlusions \\
+	There might be other objects in the way of what we want to classify
+	\item Background and clutter \\
+	The background might blend into our object.
+	\item Inraclass variation \\
+	There are a lot of different looking cats...
+\end{itemize}
+
+
+\subsection*{Image classifiers vs sorting}
+There is no obvious way we can classify an image by a hard coded algorithm, like a sorting algorithm. Image classifiers needs instead a data-driven approach were we collect a data set of images with labels. We use machine learning to train our classifier and then evaluate it on a set of test images that the model/classifier was not trained on. 
+
+The task is to design a classifier f(x,W) that can tell us which class $y_i \in \{1,2,...,N\}$ an image $x_i$ belongs to. The approach is:
+
+\begin{itemize}
+ 	\item Select a classifier - we start with a linear classifier y = WX+b
+ 	\item Select performance measure - Loss functions (ex. SVM or SoftMax)
+ 	\item Find the parameters W which maximize performance, minimize loss - Learning
+ \end{itemize} 
+
+
+\subsection*{Linear classification}
+The parametric approach:
+
+\begin{equation}
+f(x,W) = Wx
+\end{equation}
+
+\begin{example}{Example: }
+
+\begin{equation}
+\begin{aligned}
+\text{image} \begin{bmatrix} 32 \times 32 \times 3 \end{bmatrix} 
+\end{aligned}
+\end{equation}
+
+\end{example}	
+
+
+\subsection*{Multiclass SVM loss}
+Given an example image to classifier ($x_i,y_i$) where $x_i$ is the image and $y_i$ is the label (integer) and using the shorthand for the scores vector: $s = f(x_i,W)$, the SVM loss has the form:
+
+\begin{equation}
+L_i = \sum_{n \neq y} \text{max}(0,s_j-s_{y_i} +1)  
+\end{equation}
+The full training loss is the mean over all examples in the training data:
+\begin{equation}
+L = \frac{1} {N} \sum_{i=1}^{N} L_i
+\end{equation}
+
+\subsection*{Softmax classifier (Multinomial Logistic Regression)}
+The scores is the unnormalized log probabilities of the classes:
+
+\begin{equation}
+P(y=k |X=x_i) = \frac{e^{s_k}} {\sum_{j}e^{s_j}}, \text{ where } s = f(x_i,W) 
+\end{equation}
+
+We want to maximize the log likelihood or for a loss function to minimize the negative log likelihood of the correct class:
+
+\begin{equation}
+L_i = - \text{log} P(Y=y_i|X=x_i)
+\end{equation}
+Or in summary:
+
+\begin{equation}
+L_i = -\text{log}(\frac{e^{sy_i}} {\sum_{j}^{}e^{s_j}})
+\end{equation}
+
+To summarize: the goal is to minimize the loss over the training data. To do this we Follow the slope to find the minimum. In multiple dimensions we call this the gradient and in 1D the familiar derivative:
+
+
+\begin{equation}
+\frac{df(x)} {dx} lim h \rightarrow 0 \frac{f(x+h)-f(x)} {h} 
+\end{equation}
+
+
+\begin{enumerate}
+	\item Start with initialize weights
+	\item Compute the gradient w.r.t. W, $\nabla L(W_k,\overline{x}) = (\frac{\partial L} {\partial w1}, \frac{\partial L} {\partial w2})$ 
+	\item Take a small step in the direction of the negative gradient. $W_{k+1} = W_k - \text{stepsize} \times \nabla L$
+	\item Continue iterate from 2 until convergence
+\end{enumerate}
+
+\subsection*{The limits of linear classifiers}
+
+
+There are many cases were the linear classifier gets a hard time classifying correctly. \textcolor{red}{See example in lecture slides of non linear classes} 
+
+
+\subsection*{Neural networks - Stacked non-linear classifiers}
+In Neural networks we stack our linear classifiers and add a non linear activation function. 
+
+\begin{itemize}
+	\item \textbf{Before} Linear score function: $f = Wx$
+	\item \textbf{Now} 2-layer Neural network: $W_2$max(0,$W_1 x$)
+\end{itemize}
+
+Example of activation functions:
+
+\begin{itemize}
+	\item sigmoid(x) = $\frac{1} {1+e^{-x}}$
+	\item tanh = $\frac{e^{x}-e^{-x}} {e^{x}+e^{-x}}$ = sigmoid(2x)-1 \textcolor{red}{?} 
+	\item ReLU(x) = max(0,1)
+\end{itemize}
+
+We can stack even more of this layer on top of each other 
+
+\begin{itemize}
+	\item \textbf{Now} 3-layer Neural network: $W_3$(0, $W_2$ max(0,$W_1 x$))
+\end{itemize}
+
+
+\subsection*{Deep Convolution Neural network}
+
+A Neural network containing one  \textbf{single hidden layer} contains a finite number of neurons that can approximate continuous functions on compact subsets of $R^{n}$. It has been showed that deeper neural network (more hidden layers) can generalize better. The number of weights in the fully connected deep neural network grow exponentially for every layer we add, so does the computational cost to train and do inference. But we can reduce this growth by recycling the weights or share weights over the image. A convolution neural network contains convolution layers that have local connections so the spatial relationships of the image is preserved. This also result in parameter sharing. This is a technique widely uses in image analysis. 
+
+\subsection*{2D and 3D convolutions}
+The filter coefficients for the convolution layer is learned from data. It can be implemented as matrix multiplication and is therefore faster to compute. There are fast GPU implementations that can be used for this. It is implemented as tensor multiplications and additions. And it uses hierarchical feature extraction \textcolor{red}{?} 
+
+\subsection*{Optimization}
+The steps involved in optimizing the classifier:
+
+\begin{itemize}
+	\item Choose loss function
+	\item Stochastic Gradient Descent and variants of it
+	\item Initialization \textcolor{red}{red}
+	\item Hyper parameters
+	\item Overcome problems like over fitting, local minima, saddle points and vanishing gradients
+	\item Regularization can solve some of this
+\end{itemize}
+
+
+\subsection*{Summary of neural networks}
+The neural network learns from its mistakes by using a \textcolor{red}{loss function}. The neural network contains hundreds of parameters that need to be trained using \textcolor{red}{back propagation}. We increase and decrease the parameter values so the mistake is reduced, \textcolor{red}{Stochastic Gradient
+Descen}. And we repeat this process. 
+
+
+\subsection*{BONUS material}
+How do we compute this backpropagation? 
+\begin{itemize}
+	\item Gradient descent to minimize the loss L:
+	\begin{enumerate}
+		\item we initialize the weights $W_0$ (randomly)
+		\item Compute the gradient $\nabla L(W_k,\overline{x}) = (\frac{\partial L} {\partial w1}, \frac{\partial L} {\partial w2})$ 
+		\item Take a small step in the negative gradient direction: $W_{k+1} ) W_k \times \nabla L$
+		\item Iterate from 2 until convergence
+	\end{enumerate}
+\end{itemize}
+
+\begin{itemize}
+	\item Backpropagation uses the chain rule, the derivatives are propagating backwards: $\frac{\partial L} {\partial \text{input}} = \frac{\partial L} {\partial \text{output}} \frac{\partial \text{output}} {\partial \text{input}}   $
+	\begin{itemize}
+		\item Forward: compute the result of and save if any intermediates needed for the gradient computation in memory
+		\item Backward: apply the chain rule to compute the gradient of the loss function with respect the the inputs.
+	\end{itemize}
+\end{itemize}
+
+
+
+\subsection*{extra notes}
+
+add  DL optimization difficulties. 
+\begin{enumerate}
+	\item Non-convex
+	\item Large scale, both large n and large dimensions of $\theta$
+	\item Noisy data
+\end{enumerate}
+
+Classes of optimization methods:
+
+\begin{enumerate}
+	\item Deterministic, look at the whole \textcolor{red}{batch} of training data
+	\item Stochastic, look at a random subset of of training data each time 
+\end{enumerate}
+
+
+benefit of stochastic to avoid getting stuck in local minima. 
+
+Fixed input size with fully connected. 
+
+softmax prediction number is not the probability, typically not true. Its just an indicator 
+
+tips for first time use learn, resnet. 
